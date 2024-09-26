@@ -16,6 +16,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
+        if (!session()->has('url.intended')) {
+            session(['url.intended' => url()->previous(),'success' => 'You are now logged in.']);
+        }
+
         return view('auth.login');
     }
 
@@ -28,7 +32,9 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('home', absolute: false));
+        $notification = $this->setNotification('You are now logged in.','success');
+
+        return redirect()->intended(route('home', absolute: false))->with($notification);
     }
 
     /**

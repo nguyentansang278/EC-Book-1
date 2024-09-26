@@ -43,16 +43,20 @@
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <button title="View your wish list." id="wishlist-btn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                <a href="{{route('wishlist.index')}}" title="View your wish list." id="wishlist-btn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                     <i class="fa-regular fa-heart"></i>
-                </button>
-                <button title="View your cart" id="cart-btn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                </a>
+                <a href="{{route('cart.index')}}" title="View your cart" id="cart-btn" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
                     <i class="fa-solid fa-cart-shopping"></i>
-                </button>
+                </a>
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button title="Profile" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
-                            <div><i class="fa-regular fa-user"></i></div>
+                            @if (Auth::check())
+                                <div>Hi, {{Auth::user()->name}}</div>
+                            @else
+                                <div><i class="fa-regular fa-user"></i></div>
+                            @endif
                         </button>
                     </x-slot>
                     @if (Auth::check())

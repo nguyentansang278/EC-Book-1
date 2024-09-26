@@ -2,47 +2,52 @@
 
 namespace App\Http\Controllers;
 use App\Models\Book;
+use App\Models\Category;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\Wishlist;
+
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::all();
-        return view('books.index', compact('books'));
+        $sort = $request->query('sort', 'default');
+        $genreId = $request->query('genre');
+
+        $query = Book::query();
+
+
+        if ($genreId) {
+            $query->join('book_category', 'books.id', '=', 'book_category.book_id')->where('book_category.category_id', $genreId);
+            $selectedGenre = Category::find($genreId);
+        } else {
+            $selectedGenre = null;
+        }
+
+        $books = $query->select('books.*')->get();
+
+        return view('books.index', compact(['books', 'genreId', 'selectedGenre']));
     }
 
-    public function create()
+    public function show($id)
     {
-        return view('books.create');
+        $book = Book::findOrFail($id);
+        $inWishlist = false;
+        if (Auth::check()) {
+            $inWishlist = Wishlist::where('user_id', Auth::id())
+                                        ->where('book_id', $id)
+                                        ->first();
+        }
+        return view('books.book-description', compact('book', 'inWishlist'));
     }
 
-    public function store(Request $request)
+    public function getRelatedProducts($genre)
     {
-        $book = new Book($request->all());
-        $book->save();
-        return redirect()->route('books.index');
-    }
+        $products = Product::whereHas('genres', function($query) use ($genre) {
+            $query->where('name', $genre);
+        })->paginate(10);
 
-    public function show(Book $book)
-    {
-        return view('books.book-description', compact('book'));
-    }
-
-    public function edit(Book $book)
-    {
-        return view('books.edit', compact('book'));
-    }
-
-    public function update(Request $request, Book $book)
-    {
-        $book->update($request->all());
-        return redirect()->route('books.index');
-    }
-
-    public function destroy(Book $book)
-    {
-        $book->delete();
-        return redirect()->route('books.index');
+        return response()->json($products);
     }
 }
