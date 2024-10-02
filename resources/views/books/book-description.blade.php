@@ -69,33 +69,6 @@
 
 <script type="text/javascript">
     $(document).ready(function() {
-        $('#add-to-cart-form').submit(function(event) {
-            event.preventDefault();
-
-            let bookId = $('input[name="book_id"]').val();
-            let quantity = $('input[name="quantity"]').val();
-
-            $.ajax({
-                url: '{{ route('cart.add') }}',
-                method: 'POST',
-                data: {
-                    _token: '{{ csrf_token() }}',
-                    book_id: bookId,
-                    quantity: quantity
-                },
-                success: function(response) {
-                    if(response.success) {
-                        toastr.success(response.success);
-                    } else if(response.login) {
-                        window.location.href = response.login_url;
-                    }
-                },
-                error: function(response) {
-                    toastr.error('An error occurred, please try again.');
-                }
-            });
-        });
-
         $('#add-to-wishlist').click(function() {
             event.preventDefault();
             let button = $(this);

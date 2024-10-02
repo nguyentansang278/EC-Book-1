@@ -4,8 +4,7 @@
 
 	<div id="container" class="bg-gray-100 p-6">
 		<div class="container mx-auto flex">
-			<!-- Sidebar -->
-			<div class="fixed inset-0 bg-black opacity-20 hidden" id="overlay"></div>
+			<div class="fixed inset-0 bg-black opacity-50 hidden z-10" id="overlay"></div>
 
 			<div id="genres-sidebar" class="w-3/5 lg:w-1/4 bg-white p-4 rounded-lg shadow-md hidden lg:block absolute lg:relative">
 				<h2 class="text-xl font-semibold mb-4">Genres</h2>
@@ -48,7 +47,8 @@
         document.getElementById('toggle-genres-sidebar').addEventListener('click', function() {
 		    var sidebar = document.getElementById('genres-sidebar');
 		    var overlay = document.getElementById('overlay');
-		    sidebar.classList.toggle('hidden');
+		    sidebar.classList.remove('hidden');
+		    sidebar.classList.add('z-10');
 		    overlay.classList.toggle('hidden');
 		});
 
@@ -56,11 +56,16 @@
 		    var sidebar = document.getElementById('genres-sidebar');
 		    var overlay = document.getElementById('overlay');
 		    sidebar.classList.add('hidden');
+		    sidebar.classList.remove('z-10');
 		    overlay.classList.add('hidden');
+            document.getElementById('search-results').classList.remove('active');
+            $('#searchbox').addClass('hidden');
+
+
 		});
 		document.getElementById('sortSelect').addEventListener('change', function() {
 		    let sortBy = this.value;
-		    let items = document.querySelectorAll('#item'); // Giả sử các mục cần sắp xếp có class là 'item'
+		    let items = document.querySelectorAll('#item');
 		    let itemsArray = Array.from(items);
 
 		    itemsArray.sort((a, b) => {

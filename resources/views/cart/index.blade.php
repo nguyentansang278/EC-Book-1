@@ -1,5 +1,5 @@
 <style>
-    #search{
+    #open_searchbox_btn{
         display: none;
     }
     .disabled {
@@ -52,15 +52,15 @@
     let updateTimeout;
 
     function changeQuantity(button, increment) {
-        let input = button.parentElement.querySelector('input[name="quantity"]');
-        let currentValue = parseInt(input.value);
+        let input = $(button).parent().find('input[name="quantity"]');
+        let currentValue = parseInt(input.val());
         let newValue = currentValue + increment;
         if (newValue >= 0) {
-            input.value = newValue;
+            input.val(newValue);
             clearTimeout(updateTimeout);
             disableInputs(true);
             updateTimeout = setTimeout(() => {
-                updateQuantity(input.dataset.id, newValue);
+                updateQuantity(input.data('id'), newValue);
             }, 1500);
             updateSubtotal();
         }
@@ -69,101 +69,88 @@
     function updateQuantity(id, quantity) {
         $.ajax({
             url: '{{ route('cart.updateQuantity') }}',
-            type: 'POST',
-            dataType: 'json',
+            method: 'POST',
             data: {
                 id: id,
                 quantity: quantity,
                 _token: '{{ csrf_token() }}'
             },
-            success: function(data) {
-                if (!data.success) {
-                    toastr.error(data.error);
-                } else {
-                    toastr.success(data.success);
-                }
-                disableInputs(false);
+            success: function(response) {
+                handleResponse(response, function() {
+                    disableInputs(false);
+                });
             },
-            error: function(xhr, status, error) {
-                let errorMessage = 'An error occurred: ' + error;
-        
-                if (xhr.status === 404) {
-                    errorMessage = 'Resource not found (404).';
-                } else if (xhr.status === 500) {
-                    errorMessage = 'Internal server error (500).';
-                } else if (xhr.responseJSON && xhr.responseJSON.message) {
-                    errorMessage = xhr.responseJSON.message;
-                }
-
-                toastr.error(errorMessage);
-                disableInputs(false);
+            error: function(response) {
+                handleError(response, function() {
+                    disableInputs(false);
+                });
             }
         });
     }
 
-
     function updateSubtotal() {
-        let items = document.querySelectorAll('.cart-item');
+        let items = $('.cart-item');
         let quantities = 0;
         let subtotal = 0;
-        items.forEach(item => {
-            let quantity = parseInt(item.querySelector('input[name="quantity"]').value);
-            let price = parseFloat(item.querySelector('.price').innerText.replace('$', ''));
+        items.each(function() {
+            let quantity = parseInt($(this).find('input[name="quantity"]').val());
+            let price = parseFloat($(this).find('.price').text().replace('$', ''));
             quantities += quantity;
             subtotal += quantity * price;
         });
-        document.getElementById('subtotal').innerText = `Subtotal (${quantities} items): $${subtotal.toFixed(2)}`;
+        $('#subtotal').text(`Subtotal (${quantities} items): $${subtotal.toFixed(2)}`);
     }
 
     function disableInputs(disable) {
-        let inputs = document.querySelectorAll('input[name="quantity"]');
-        let buttons = document.querySelectorAll('.decrement, .increment');
-        inputs.forEach(input => {
+        let inputs = $('input[name="quantity"]');
+        let buttons = $('.decrement, .increment');
+        inputs.each(function() {
             if (disable) {
-                input.classList.add('disabled');
+                $(this).addClass('disabled');
             } else {
-                input.classList.remove('disabled');
+                $(this).removeClass('disabled');
             }
         });
     }
 
-    document.addEventListener('DOMContentLoaded', (event) => {
+    $(document).ready(function() {
         updateSubtotal();
-        document.querySelectorAll('input[name="quantity"]').forEach(input => {
-            input.addEventListener('change', (event) => {
-                clearTimeout(updateTimeout);
-                disableInputs(true);
-                updateTimeout = setTimeout(() => {
-                    updateQuantity(input.dataset.id, input.value);
-                }, 1500);
-                updateSubtotal();
-            });
+        $('input[name="quantity"]').on('change', function() {
+            clearTimeout(updateTimeout);
+            disableInputs(true);
+            updateTimeout = setTimeout(() => {
+                updateQuantity($(this).data('id'), $(this).val());
+            }, 1500);
+            updateSubtotal();
         });
-    });
 
-    document.querySelectorAll('.delete-btn').forEach(function(button) {
-        button.addEventListener('click', function(event) {
+        $('.delete-btn').on('click', function(event) {
             event.preventDefault();
-            let itemId = this.getAttribute('data-id');
+            let itemId = $(this).data('id');
             deleteItem(itemId);
         });
     });
+
     function deleteItem(itemId) {
-        fetch(`/cart/delete/${itemId}`, {
-            method: 'DELETE',
+        $.ajax({
+            url: `/cart/delete/${itemId}`,
+            type: 'DELETE',
             headers: {
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            }
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                document.querySelector(`.item-${itemId}`).remove();
-                toastr.success('Deleted');
-                updateSubtotal();
-            } else {
-                toastr.error('Delete failed');
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data.success) {
+                    $(`.item-${itemId}`).remove();
+                    toastr.success('Deleted');
+                    updateSubtotal();
+                } else {
+                    toastr.error('Delete failed');
+                }
+            },
+            error: function(xhr, status, error) {
+                toastr.error('An error occurred: ' + error);
             }
         });
     }
+
 </script>

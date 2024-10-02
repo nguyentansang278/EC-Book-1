@@ -27,4 +27,20 @@
             </div>
         </div>
     </body>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+            let errorFields = document.querySelectorAll('.is-invalid');
+            console.log(errorFields);
+            errorFields.forEach(function(field) {
+                let errorMessage = field.nextElementSibling;
+                if (errorMessage && errorMessage.classList.contains('invalid-feedback')) {
+                    if (errorMessage.innerText.trim() !== '') {
+                        field.focus();
+                        return false;
+                    }
+                }
+            });
+        });
+    </script>
+
 </html>

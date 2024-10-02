@@ -27,18 +27,15 @@
                     </x-nav-link>
                 </div>
             </div>
-
-            <div id="search" class="flex ">
-                <form method="GET" class="form-inline my-2 my-lg-0 space-x-2 flex items-center ">
-                    <x-text-input
-                        type="search"
-                        name="query"
-                        class="mt-1"
-                        placeholder="{{ __('Search product') }}"
-                    />
-                    <button class="btn btn-outline-success my-2 my-sm-0 shrink-0 flex items-center" type="submit">Search</button>
-                </form>
-            </div>
+            <button id="open_searchbox_btn" class="flex my-2 my-lg-0 space-x-2 flex items-center">
+                <x-text-input
+                    type="search"
+                    name="query"
+                    class="mt-1 cursor-pointer"
+                    placeholder="{{ __('Search product') }}"
+                    readonly
+                />
+            </button>
 
 
             <!-- Settings Dropdown -->

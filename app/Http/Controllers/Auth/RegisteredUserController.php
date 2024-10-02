@@ -35,6 +35,11 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // Check if the email exists
+        if (!User::where('email', $request->email)->exists()) {
+            return redirect()->back()->withErrors(['email' => 'The email address does not exist.'])->withInput();
+        }
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,

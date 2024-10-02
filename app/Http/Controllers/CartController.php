@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Cart;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use App\Http\Requests\Cart\AddToCartRequest;
+use App\Http\Requests\Cart\UpdateQuantityRequest;
 
 class CartController extends Controller
 {
@@ -15,25 +18,23 @@ class CartController extends Controller
         return view('cart.index', compact('cartItems'));
     }
 
-    public function updateQuantity(Request $request)
+    public function updateQuantity(UpdateQuantityRequest $request)
     {
-        $request->validate([
-            'quantity' => 'required|integer|min:1',
-        ]);
         $cartItem = Cart::find($request->id);
         if ($cartItem) {
             $cartItem->quantity = $request->quantity;
             $cartItem->save();
             return response()->json(['success' => 'Updated']);
         }
-        return response()->json(['error' => false], 404);
+        return response()->json(['error'=>'Item not found']);
     }
 
-    public function addToCart(Request $request)
+    public function addToCart(AddToCartRequest $request)
     {
         if (!Auth::check()) {
             return response()->json(['login' => true, 'login_url' => route('login')]);
         }
+
         $bookId = $request->input('book_id');
         $quantity = $request->input('quantity', 1);
 
@@ -46,7 +47,6 @@ class CartController extends Controller
         $cart->save();
         
         return response()->json(['success' => 'Added to cart.']);
-
     }
 
     public function destroy($id)

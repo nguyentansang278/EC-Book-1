@@ -6,6 +6,8 @@ use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Wishlist;
+use Illuminate\Support\Str;
+
 
 
 class BookController extends Controller
@@ -49,5 +51,16 @@ class BookController extends Controller
         })->paginate(10);
 
         return response()->json($products);
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        if (!(Str::length($query) === 0)) {
+            $books = Book::where('name', 'LIKE', "%{$query}%")->get();
+            return response()->json(['books' => $books]);
+        } else if (Str::length($query) == 0) {
+            return response()->json(['books' => []]);
+        }
     }
 }

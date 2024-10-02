@@ -1,5 +1,5 @@
 <style>
-    #search{
+    #open_searchbox_btn{
         display: none;
     }
 </style>
