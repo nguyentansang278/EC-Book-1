@@ -111,7 +111,6 @@
         //custom handle response
         function handleResponse(response, callback) {
             if (response.success) {
-                console.log(response.success);
                 toastr.success(response.success);
             } else if (response.login) {
                 window.location.href = response.login_url;
@@ -128,8 +127,6 @@
         function handleError(response, callback) {
             if (response.status === 422) {
                 toastr.error(response.responseJSON.errors.join('<br>'));
-            } else {
-                toastr.error('An error occurred, please try again.');
             }
             if (typeof callback === 'function') {
                 callback();
@@ -184,10 +181,11 @@
             $('#search').focus();
         });
 
-        $('#add-to-cart-form').submit(function(event) {
+        $('form[id^="add-to-cart-form-"]').submit(function(event) {
             event.preventDefault();
 
-            let formData = $(this).serialize();
+            let form = $(this);
+            let formData = form.serialize();
             formData += '&_token={{ csrf_token() }}';
 
             $.ajax({
@@ -195,8 +193,17 @@
                 method: 'POST',
                 data: formData,
                 success: handleResponse,
-                error: handleError
+                error: function(response) {
+                    handleError(response, function() {
+                        if(response.status === 403) {
+                            window.location.href = '{{ route('verification.notice') }}';
+                        } else if(response.status === 401) {
+                            window.location.href = '{{ route('login') }}';
+                        }
+                    });
+                }
             });
         });
+
     </script>
 </html>

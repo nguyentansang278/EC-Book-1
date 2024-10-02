@@ -17,7 +17,7 @@
                     <p class="text-gray-600 border-b-2 md:border-0">Price: <span class="text-red-400">${{$book->price}}</span></p>
 
                     <!-- Add book to cart form -->
-					<form id="add-to-cart-form" method="POST" class="mt-4">
+					<form id="add-to-cart-form-{{ $book->id }}" method="POST" class="mt-4">
 	                    @csrf
 	                    <input type="hidden" name="book_id" value="{{ $book->id }}">
                         <div class="flex items-center space-x-2 w-2/3 md:w-full lg:w-1/2">
@@ -92,12 +92,14 @@
                         }
                     } else if(response.login) {
                         window.location.href = response.login_url;
-                    } else {
-                        toastr.error('error1');
                     }
                 },
                 error: function(response) {
-                    toastr.error('error2');
+                    if(response.status === 403) {
+                        window.location.href = '{{ route('verification.notice') }}';
+                    } else if(response.status === 401) {
+                        window.location.href = '{{ route('login') }}';
+                    }
                 }
             });
         });

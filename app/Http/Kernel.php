@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
 class Kernel extends HttpKernel
 {
-
-    protected $routeMiddleware = [
+    protected $middlewareAliases = [
+        // 'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
     ];
 }

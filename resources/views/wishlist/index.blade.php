@@ -22,7 +22,7 @@
                 </div>
             </div>
             <div class="w-full md:w-1/4 bg-white p-4 shadow-md">
-                <form id="add-to-cart-form" method="POST" >
+                <form id="add-to-cart-form-{{ $item->book->id }}" method="POST" >
                     @csrf
                     <input type="hidden" name="book_id" value="{{ $item->book->id }}">
                     <input type="hidden" name="quantity" value="1">

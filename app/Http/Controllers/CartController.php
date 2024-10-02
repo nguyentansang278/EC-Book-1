@@ -45,7 +45,6 @@ class CartController extends Controller
 
         $cart->quantity += $quantity;
         $cart->save();
-        
         return response()->json(['success' => 'Added to cart.']);
     }
 

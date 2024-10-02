@@ -34,6 +34,10 @@ class AuthenticatedSessionController extends Controller
 
         $notification = $this->setNotification('Logged in.','success');
         
+        $user = Auth::user();
+        if (!$user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice')->with($notification);
+        }
         return redirect()->intended(route('home'))->with($notification);
     }
 
