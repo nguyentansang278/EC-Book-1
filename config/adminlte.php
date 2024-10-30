@@ -335,8 +335,8 @@ return [
             // 'icon' => 'fas fa-fw fa-book',
         ],
         [
-            // 'text' => 'Authors',
-            // 'url' => 'admin/authors',
+            'text' => 'Orders',
+            'url' => 'admin/orders',
             // 'icon' => 'fas fa-fw fa-book',
         ],
         [

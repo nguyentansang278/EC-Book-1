@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Client;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Mail;
+use App\Models\Order;
 
 class OrderController extends Controller
 {
@@ -35,10 +36,12 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $order = Order::with(['user', 'address', 'orderItems.book'])->findOrFail($id);
+        return view('guest.orders.show', compact('order'));
     }
+
 
     /**
      * Show the form for editing the specified resource.

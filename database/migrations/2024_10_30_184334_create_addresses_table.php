@@ -4,30 +4,33 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateAddressesTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('addresses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('street'); // Đường
-            $table->string('ward'); // Phường/Xã
-            $table->string('district'); // Quận/Huyện
-            $table->string('city'); // Thành phố/Tỉnh
-            $table->string('postal_code')->nullable(); // Mã bưu điện có thể null
+            $table->string('phone_number');
+            $table->string('address');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('addresses');
     }
-};
+}

@@ -5,6 +5,7 @@ use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
 use App\Http\Controllers\Client\ProfileController;
 use App\Http\Controllers\Client\BookController;
@@ -52,10 +53,17 @@ Route::middleware(['auth','verified'])->group(function () {
             Route::post('/update-quantity', 'updateQuantity')->name('cart.updateQuantity');
         });
     });
+
     Route::prefix('checkout')->group(function(){
         Route::controller(CheckoutController::class)->group(function(){
             Route::get('/', 'index')->name('checkout.index');
-            Route::post('/', 'store')->name('checkout.store');
+            Route::post('/', 'processCheckout')->name('processCheckout');
+        });
+    });
+
+    Route::prefix('orders')->group(function(){
+        Route::controller(OrderController::class)->group(function(){
+            Route::get('/{id}', 'show')->name('client.orders.show');
         });
     });
 });
@@ -81,6 +89,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'can:access-admin']]
             Route::delete('/{book}', 'destroy')->name('books.destroy');
             Route::post('/', 'store')->name('books.store');
             Route::patch('/{book}/toggle-status', 'toggleStatus')->name('books.toggleStatus');
+        });
+    });
+    Route::prefix('orders')->group(function () {
+        Route::controller(AdminOrderController::class)->group(function() {
+            Route::get('/', 'index')->name('admin.orders.index');
+            Route::get('/{id}', 'show')->name('admin.orders.show');
+            Route::delete('/{id}', 'destroy')->name('admin.orders.destroy');
+            Route::put('/{id}', 'update')->name('admin.orders.update');
+
         });
     });
 });

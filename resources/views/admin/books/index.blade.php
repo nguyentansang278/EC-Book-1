@@ -15,7 +15,7 @@
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-10">
-            <h1 class="m-0">Books</h1>
+                <h1 class="m-0">Books</h1>
             </div>
             <div class=" col-sm-2">
             	<div class="row col-sm-8">
@@ -32,8 +32,6 @@
     	<div class="card">
 			<div class="card-body p-0">
 				<div class="table-responsive">
-					<div class="row ">
-					</div>
 					<hr>
 					<div class="row col-md-12">
 						<div class="col-md-12">
@@ -129,7 +127,9 @@
 						</div>
 					</div>
 					<div class="row col-md-12">
-
+                        @if (count($books))
+                            {{ $books->render('admin.includes.pagination') }}
+                        @endif
 					</div>
 				</div>
 			</div>

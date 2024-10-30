@@ -14,49 +14,25 @@
         @method('patch')
 
         @forelse ($addresses as $address)
-            <div class="flex space-x-4">
-                <div>
-                    <x-input-label for="street_{{ $address->id }}" :value="__('Street')" />
-                    <x-text-input id="street_{{ $address->id }}" name="addresses[{{ $address->id }}][street]" type="text" class="mt-1 block w-full" :value="$address->street" placeholder="Street"/>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="col-span-1">
+                    <x-input-label for="phone_{{ $address->id }}" :value="__('Phone')" />
+                    <x-text-input id="phone_{{ $address->id }}" name="addresses[{{ $address->id }}][phone_number]" type="text" class="mt-1 block w-full" :value="$address->phone_number" placeholder="Phone number"/>
                 </div>
-                <div>
-                    <x-input-label for="ward_{{ $address->id }}" :value="__('Ward')" />
-                    <x-text-input id="ward_{{ $address->id }}" name="addresses[{{ $address->id }}][ward]" type="text" class="mt-1 block w-full" :value="$address->ward" placeholder="Ward"/>
-                </div>
-                <div>
-                    <x-input-label for="district_{{ $address->id }}" :value="__('District')" />
-                    <x-text-input id="district_{{ $address->id }}" name="addresses[{{ $address->id }}][district]" type="text" class="mt-1 block w-full" :value="$address->district" placeholder="District"/>
-                </div>
-                <div>
-                    <x-input-label for="city_{{ $address->id }}" :value="__('City')" />
-                    <x-text-input id="city_{{ $address->id }}" name="addresses[{{ $address->id }}][city]" type="text" class="mt-1 block w-full" :value="$address->city" placeholder="City"/>
-                </div>
-                <div>
-                    <x-input-label for="postal_code_{{ $address->id }}" :value="__('Postal Code')" />
-                    <x-text-input id="postal_code_{{ $address->id }}" name="addresses[{{ $address->id }}][postal_code]" type="text" class="mt-1 block w-full" :value="$address->postal_code" placeholder="Postal Code"/>
+                <div class="col-span-3">
+                    <x-input-label for="address_{{ $address->id }}" :value="__('Address')" />
+                    <x-text-input id="address_{{ $address->id }}" name="addresses[{{ $address->id }}][address]" type="text" class="mt-1 block w-full" :value="$address->address" placeholder="Address"/>
                 </div>
             </div>
         @empty
-            <div class="flex space-x-4">
-                <div>
-                    <x-input-label for="new_street" :value="__('Street')" />
-                    <x-text-input id="new_street" name="new_address[street]" type="text" class="mt-1 block w-full" placeholder="Street"/>
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                <div class="col-span-1">
+                    <x-input-label for="new_phone_number" :value="__('Phone')" />
+                    <x-text-input id="new_phone_number" name="new_address[phone_number]" type="text" class="mt-1 block w-full" placeholder="Phone number"/>
                 </div>
-                <div>
-                    <x-input-label for="new_ward" :value="__('Ward')" />
-                    <x-text-input id="new_ward" name="new_address[ward]" type="text" class="mt-1 block w-full" placeholder="Ward"/>
-                </div>
-                <div>
-                    <x-input-label for="new_district" :value="__('District')" />
-                    <x-text-input id="new_district" name="new_address[district]" type="text" class="mt-1 block w-full" placeholder="District"/>
-                </div>
-                <div>
-                    <x-input-label for="new_city" :value="__('City')" />
-                    <x-text-input id="new_city" name="new_address[city]" type="text" class="mt-1 block w-full" placeholder="City"/>
-                </div>
-                <div>
-                    <x-input-label for="new_postal_code" :value="__('Postal Code')" />
-                    <x-text-input id="new_postal_code" name="new_address[postal_code]" type="text" class="mt-1 block w-full" placeholder="Postal Code"/>
+                <div class="col-span-3">
+                    <x-input-label for="new_address" :value="__('Address')" />
+                    <x-text-input id="new_address" name="new_address[address]" type="text" class="mt-1 block w-full" placeholder="Address"/>
                 </div>
             </div>
         @endforelse

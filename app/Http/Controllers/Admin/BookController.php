@@ -14,7 +14,7 @@ class BookController extends Controller
     public function index(Request $request)
     {
         $query = Book::query();
-        
+
         // Lọc theo tên sách
         if ($request->filled('name')) {
             $query->where('name', 'LIKE', '%' . $request->name . '%');
@@ -32,11 +32,14 @@ class BookController extends Controller
             });
         }
 
+        // Lọc theo trạng thái
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        $books = $query->get();
+        // Phân trang và lấy sách
+        $books = $query->paginate(20);
+
         $authors = Author::orderBy('name', 'asc')->get();
         $categories = Category::orderBy('name', 'asc')->get();
         $status = BookStatus::cases();

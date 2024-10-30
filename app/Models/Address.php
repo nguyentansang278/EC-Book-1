@@ -11,13 +11,9 @@ class Address extends Model
 
     protected $fillable = [
         'user_id',
-        'street',
-        'ward', // Phường/Xã
-        'district', // Quận/Huyện
-        'city', // Thành phố/Tỉnh
-        'postal_code',
+        'address',
+        'phone_number',
     ];
-
     public function user()
     {
         return $this->belongsTo(User::class);
