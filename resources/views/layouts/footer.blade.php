@@ -31,7 +31,9 @@
                         <h2 class="text-xl font-bold mb-4">Categories</h2>
                         <ul>
                             @foreach($genres as $genre)
-                                <li><a href="books?genre={{$genre->id}}" class="hover:underline text-sm">{{ $genre->name }}</a></li>
+                                <li>
+                                    <a href="{{ route('books', ['genre' => $genre->id]) }}" class="hover:underline text-sm">{{ $genre->name }}</a>
+                                </li>
                             @endforeach
                         </ul>
                     </div>

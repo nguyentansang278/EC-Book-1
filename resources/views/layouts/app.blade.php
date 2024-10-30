@@ -50,9 +50,6 @@
                     </div>
                 </div>
             </div>
-
-            
-
             
             <!-- Page Heading -->
             @isset($header)
@@ -75,7 +72,7 @@
             positionClass: 'toast-bottom-right',
             timeOut: 2000, 
             newestOnTop: true 
-    };
+        };
 
         @if(Session::has('message'))
             var type = "{{ Session::get('alert-type', 'info') }}";

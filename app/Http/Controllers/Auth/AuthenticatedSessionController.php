@@ -8,6 +8,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
+use App\Enums\Role;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -20,7 +21,7 @@ class AuthenticatedSessionController extends Controller
             session(['url.intended' => url()->previous(),'success' => 'Logged in.']);
         }
 
-        return view('auth.login');
+        return view('guest.auth.login');
     }
 
     /**
@@ -29,15 +30,20 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
         $request->session()->regenerate();
+        $notification = $this->setNotification('Logged in.', 'success');
 
-        $notification = $this->setNotification('Logged in.','success');
-        
         $user = Auth::user();
+
         if (!$user->hasVerifiedEmail()) {
             return redirect()->route('verification.notice')->with($notification);
         }
+
+        // Kiểm tra vai trò của người dùng
+        if ($user->role === Role::ADMIN) {
+            return redirect()->route('admin.dashboard')->with($notification);
+        }
+
         return redirect()->intended(route('home'))->with($notification);
     }
 
