@@ -8,9 +8,11 @@ use App\Services\Admin\UserServices;
 use Illuminate\Support\Facades\DB;
 use App\Enums\Role;
 use App\Http\Requests\Admin\User\CreateUserRequest;
+use App\Http\Requests\Admin\User\EditUserRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Log;
-
+use App\Models\User;
+ 
 class UserController extends Controller
 {
     protected $userServices;
@@ -22,16 +24,29 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $params = $request->all();
+        $query = User::query();
+        
+        // Lọc theo tên
+        if ($request->filled('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
 
-        $filteredParams = remove_null_params($params);
+        // Lọc theo email
+        if ($request->filled('email')) {
+            $query->where('email', 'LIKE', '%' . $request->email . '%');
+        }
 
-        $datas = $this->userServices->getListUsers($filteredParams);
+        // Lọc theo vai trò (role)
+        if ($request->filled('role')) {
+            $query->where('role', $request->role);
+        }
 
-        return view('admin.user.index', [
-            'listUsers' => $datas
-        ]);
+        $users = $query->get();
+        $roles = Role::cases(); // Assuming you have a Role enum or similar
+
+        return view('admin.user.index', compact('users', 'roles'));
     }
+
 
     public function create()
     {

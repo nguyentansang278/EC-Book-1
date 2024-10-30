@@ -11,10 +11,37 @@ use App\Enums\BookStatus;
 
 class BookController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $books = Book::with('author', 'categories')->paginate(10);
-        return view('admin.books.index', compact('books'));
+        $query = Book::query();
+        
+        // Lọc theo tên sách
+        if ($request->filled('name')) {
+            $query->where('name', 'LIKE', '%' . $request->name . '%');
+        }
+
+        // Lọc theo tác giả
+        if ($request->filled('author_id')) {
+            $query->where('author_id', $request->author_id);
+        }
+
+        // Lọc theo thể loại
+        if ($request->filled('category_id')) {
+            $query->whereHas('categories', function ($query) use ($request) {
+                $query->where('categories.id', $request->category_id);
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $books = $query->get();
+        $authors = Author::orderBy('name', 'asc')->get();
+        $categories = Category::orderBy('name', 'asc')->get();
+        $status = BookStatus::cases();
+
+        return view('admin.books.index', compact('books', 'authors', 'categories', 'status'));
     }
 
     public function create()
@@ -63,6 +90,9 @@ class BookController extends Controller
 
     public function edit(Book $book)
     {
+        if ($book->status === BookStatus::ACTIVE) {
+            return redirect()->back()->with('error', 'Cannot edit an active book.');
+        }
         $authors = Author::orderBy('name', 'asc')->get();
         $categories = Category::orderBy('name', 'asc')->get();
         return view('admin.books.edit', compact('book', 'authors', 'categories'));
@@ -70,6 +100,9 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book)
     {
+        if ($book->status === BookStatus::ACTIVE) {
+            return redirect()->back()->with('error', 'Cannot update an active book.');
+        }
         $request->validate([
             'name' => 'required|string|max:255',
             'published_year' => 'required|integer',
@@ -107,20 +140,37 @@ class BookController extends Controller
 
     public function destroy(Book $book)
     {
+        // Kiểm tra trạng thái của sách
+        if ($book->status === BookStatus::ACTIVE) {
+            return redirect()->back()->with('error', 'Cannot delete an active book.');
+        }
+
+        // Xóa ảnh bìa nếu có
         if ($book->cover_image) {
             Storage::disk('public')->delete($book->cover_image);
         }
+
+        // Xóa sách
         $book->delete();
 
         return redirect()->route('admin.books.index')->with('success', 'Book deleted successfully.');
     }
-
     public function toggleStatus(Request $request)
     {
         $book = Book::find($request->bookId);
+
+        if (!$book) {
+            return response()->json(['status' => 'error', 'message' => 'Book not found'], 404);
+        }
+
         $book->status = $book->status === BookStatus::ACTIVE ? BookStatus::INACTIVE : BookStatus::ACTIVE;
         $book->save();
-        return response()->json(['status' => 'success', 'new_status' => $book->status]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Book status updated successfully',
+            'new_status' => $book->status,
+        ], 200);
     }
 
 }

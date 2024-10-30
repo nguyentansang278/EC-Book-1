@@ -7,7 +7,7 @@ enum BookStatus: string
     case ACTIVE = 'active';
     case INACTIVE = 'inactive';
 
-    public function label(): string
+    public function getlabel(): string
     {
         return match ($this) {
             self::ACTIVE => 'Active',

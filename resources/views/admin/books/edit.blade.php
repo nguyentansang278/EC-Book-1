@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title', 'Edit Book')
 
@@ -7,12 +7,6 @@
 @stop
 
 @section('content')
-    <style>
-        .form-control option:checked {
-            background-color: #016F74; /* Custom background color */
-            color: white; /* Custom text color */
-        }
-    </style>
     <div class="container">
         <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
             @csrf

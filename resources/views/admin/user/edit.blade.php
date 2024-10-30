@@ -1,4 +1,4 @@
-@extends('adminlte::page')
+@extends('layouts.admin')
 
 @section('title_page', 'Edit User')
 
@@ -71,7 +71,7 @@
                 <!-- /.card-body -->
                 <div class="card-footer">
                     <a href="{{ route('users') }}" class="btn btn-success">Back</a>
-                    <button type="button" class="btn btn-primary btn-edit">Submit</button>
+                    <button type="submit" class="btn btn-primary btn-edit">Submit</button>
                 </div>
             </form>
         </div>

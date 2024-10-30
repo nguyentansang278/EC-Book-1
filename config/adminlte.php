@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'AdminLTE 3',
+    'title' => 'Admin',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -335,13 +335,13 @@ return [
             // 'icon' => 'fas fa-fw fa-book',
         ],
         [
-            'text' => 'Authors',
-            'url' => 'admin/authors',
+            // 'text' => 'Authors',
+            // 'url' => 'admin/authors',
             // 'icon' => 'fas fa-fw fa-book',
         ],
         [
-            'text' => 'Genres',
-            'url' => 'admin/genres',
+            // 'text' => 'Genres',
+            // 'url' => 'admin/genres',
             // 'icon' => 'fas fa-fw fa-lock',
         ],
 
