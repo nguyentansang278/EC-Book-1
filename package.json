@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "admin-lte": "3.2",
-        "bootstrap-switch": "^3.3.4"
+        "bootstrap-switch": "^3.3.4",
+        "jquery": "^3.7.1"
     }
 }

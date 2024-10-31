@@ -57,7 +57,8 @@ class OrderController extends Controller
         // Gửi notification
         $order->user->notify(new OrderStatusUpdated($order));
 
-        return redirect()->route('admin.orders.index')->with('message', 'Order status updated successfully!');
+        return redirect()->route('admin.orders.index')->with(['message' => 'Order status updated successfully!',
+                                                               'alert-type' => 'success']);
     }
 
 

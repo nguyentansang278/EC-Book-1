@@ -47,6 +47,7 @@
                                         <th class="text-center">User</th>
                                         <th class="text-center">Address</th>
                                         <th class="text-center">Phone</th>
+                                        <th class="text-center">Created time</th>
                                         <th class="text-center">Total Price</th>
                                         <th class="text-center">Status</th>
                                         <th class="text-center">Actions</th>
@@ -59,6 +60,7 @@
                                             <td class="text-center">{{ $order->user->name }}</td>
                                             <td class="text-center">{{ $order->address->address }}</td>
                                             <td class="text-center">{{ $order->address->phone_number }}</td>
+                                            <td class="text-center">{{ $order->created_at }}</td>
                                             <td class="text-center">${{ $order->total_price }}</td>
                                             <td class="text-center">{{ ucfirst($order->order_status->value) }}</td>
                                             <td class="text-center">

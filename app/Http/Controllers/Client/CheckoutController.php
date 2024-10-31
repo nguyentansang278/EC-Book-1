@@ -62,7 +62,7 @@ class CheckoutController extends Controller
         $order->user->notify(new OrderPlaced($order));
 
         // Redirect to the success page with a message
-        return view('guest.checkout.order_success')->with('message', 'Order placed successfully!');
+        return view('guest.checkout.order_success')->with('success', 'Order placed successfully!');
     }
 
 }

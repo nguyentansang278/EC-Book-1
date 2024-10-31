@@ -38,7 +38,7 @@ class ProfileController extends Controller
 
         $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('success', 'Profile updated.');
     }
 
     /**
@@ -64,7 +64,7 @@ class ProfileController extends Controller
             ));
         }
 
-        return Redirect::route('profile.edit')->with('status', 'addresses-updated');
+        return Redirect::route('profile.edit')->with('success', 'Addresses updated.');
     }
 
     /**

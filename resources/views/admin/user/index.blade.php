@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title_page', 'Users')
+@section('title', 'Users')
 
 @section('content')
 <div class="content-header">
@@ -121,4 +121,3 @@
     </div>
 </section>
 @endsection
-@section('js') <script> @if(session('success')) toastr.success('{{ session('success') }}'); @endif @if(session('error')) toastr.error('{{ session('error') }}'); @endif </script> @stop

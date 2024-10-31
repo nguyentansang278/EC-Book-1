@@ -32,7 +32,9 @@
                 @endforeach
             </select>
         </div>
-        <button type="submit" class="btn btn-outline-primary mt-3">Update</button>
+        <a href="{{route('admin.orders.index')}}" class="btn btn-outline-warning mt-3"><strong>Back</strong></a>
+
+        <button type="submit" class="btn btn-outline-primary mt-3"><strong>Update</strong></button>
     </form>
 </div>
 @endsection

@@ -17,10 +17,6 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(): View
     {
-        if (!session()->has('url.intended')) {
-            session(['url.intended' => url()->previous(),'success' => 'Logged in.']);
-        }
-
         return view('guest.auth.login');
     }
 
@@ -31,20 +27,19 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
         $request->session()->regenerate();
-        $notification = $this->setNotification('Logged in.', 'success');
 
         $user = Auth::user();
 
         if (!$user->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice')->with($notification);
+            return redirect()->route('verification.notice');
         }
 
         // Kiểm tra vai trò của người dùng
         if ($user->role === Role::ADMIN) {
-            return redirect()->route('admin.dashboard')->with($notification);
+            return redirect()->route('admin.dashboard')->with('success', 'Logged in.');
         }
 
-        return redirect()->intended(route('home'))->with($notification);
+        return redirect()->intended(route('home'))->with('success', 'Logged in.');
     }
 
     /**

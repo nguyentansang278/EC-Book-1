@@ -72,7 +72,8 @@
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn btn-primary">Update Book</button>
+            <a href="{{route('admin.books.index')}}" class="btn btn-outline-warning mt-3"><strong>Back</strong></a>
+            <button type="submit" class="btn btn-outline-primary mt-3"><strong>Update</strong></button>
         </form>
     </div>
 @stop
