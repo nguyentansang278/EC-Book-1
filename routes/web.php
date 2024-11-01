@@ -7,12 +7,12 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 
-use App\Http\Controllers\Client\ProfileController;
-use App\Http\Controllers\Client\BookController;
-use App\Http\Controllers\Client\CartController;
-use App\Http\Controllers\Client\WishlistController;
-use App\Http\Controllers\Client\OrderController;
-use App\Http\Controllers\Client\CheckoutController;
+use App\Http\Controllers\Guest\ProfileController;
+use App\Http\Controllers\Guest\BookController;
+use App\Http\Controllers\Guest\CartController;
+use App\Http\Controllers\Guest\WishlistController;
+use App\Http\Controllers\Guest\OrderController;
+use App\Http\Controllers\Guest\CheckoutController;
 
 Route::get('/', function(){return view ('guest.home');})->name('home');
 Route::get('/contact', function(){return view ('guest.contact');})->name('contact');
