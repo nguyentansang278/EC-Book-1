@@ -8,6 +8,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Enums\BookStatus;
+use App\Http\Requests\Admin\Book\CreateOrUpdateBookRequest;
 
 class BookController extends Controller
 {
@@ -37,8 +38,10 @@ class BookController extends Controller
             $query->where('status', $request->status);
         }
 
+        $perPage = $request->input('per_page', 10);
+
         // Phân trang và lấy sách
-        $books = $query->paginate(20);
+        $books = $query->paginate($perPage);
 
         $authors = Author::orderBy('name', 'asc')->get();
         $categories = Category::orderBy('name', 'asc')->get();
@@ -54,34 +57,38 @@ class BookController extends Controller
         return view('admin.books.create', compact('authors', 'categories'));
     }
 
-    public function store(Request $request)
+    public function store(CreateOrUpdateBookRequest $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'published_year' => 'required|integer',
-            'author_id' => 'nullable|exists:authors,id',
-            'new_author' => 'nullable|string|max:255',
-            'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'description' => 'nullable|string',
-            'cover_img' => 'nullable|string',
-            'categories' => 'nullable|array',
-            'categories.*' => 'exists:categories,id',
-            'new_category' => 'nullable|string|max:255',
-        ]);
-
         $data = $request->all();
         $data['price'] = number_format((float)$data['price'], 2, '.', '');
 
         if ($request->filled('new_author')) {
-            $author = Author::create(['name' => $request->new_author]);
-            $data['author_id'] = $author->id;
-        }
+            // Check if the author already exists
+            $existingAuthor = Author::where('name', $request->new_author)->first();
 
+            if ($existingAuthor) {
+                // If the author exists, return the existing author_id
+                $data['author_id'] = $existingAuthor->id;
+            } else {
+                // If the author does not exist, create a new author
+                $author = Author::create(['name' => $request->new_author]);
+                $data['author_id'] = $author->id;
+            }
+        }
         $book = Book::create($data);
 
         if ($request->filled('new_category')) {
-            $category = Category::create(['name' => $request->new_category]);
-            $book->categories()->attach($category->id);
+            // Check if the category already exists
+            $existingCategory = Category::where('name', $request->new_category)->first();
+
+            if ($existingCategory) {
+                // If the category exists, attach the existing category_id
+                $book->categories()->attach($existingCategory->id);
+            } else {
+                // If the category does not exist, create a new category
+                $category = Category::create(['name' => $request->new_category]);
+                $book->categories()->attah($category->id);
+            }
         }
 
         if ($request->filled('categories')) {
@@ -101,43 +108,56 @@ class BookController extends Controller
         return view('admin.books.edit', compact('book', 'authors', 'categories'));
     }
 
-    public function update(Request $request, Book $book)
+    public function update(CreateOrUpdateBookRequest $request, Book $book)
     {
+        //Cannot edit books that are on sale
         if ($book->status === BookStatus::ACTIVE) {
             return redirect()->back()->with('error', 'Cannot update an active book.');
         }
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'published_year' => 'required|integer',
-            'author_id' => 'nullable|exists:authors,id',
-            'new_author' => 'nullable|string|max:255',
-            'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
-            'description' => 'nullable|string',
-            'cover_img' => 'nullable|string',
-            'categories' => 'nullable|array',
-            'categories.*' => 'exists:categories,id',
-            'new_category' => 'nullable|string|max:255',
-        ]);
 
+        //Get datas from book
         $data = $request->all();
         $data['price'] = number_format((float)$data['price'], 2, '.', '');
 
+        //Check if new_author field is populated
         if ($request->filled('new_author')) {
-            $author = Author::create(['name' => $request->new_author]);
-            $data['author_id'] = $author->id;
+            // Check if the author already exists
+            $existingAuthor = Author::where('name', $request->new_author)->first();
+
+            //Check if new_author is existing author in database
+            if ($existingAuthor) {
+                // If the author exists, return the existing author_id
+                $data['author_id'] = $existingAuthor->id;
+            } else {
+                // If the author does not exist, create a new author
+                $author = Author::create(['name' => $request->new_author]);
+                $data['author_id'] = $author->id;
+            }
         }
 
+        //Update book
         $book->update($data);
 
         if ($request->filled('new_category')) {
-            $category = Category::create(['name' => $request->new_category]);
-            $book->categories()->attach($category->id);
+            // Check if the category already exists
+            $existingCategory = Category::where('name', $request->new_category)->first();
+
+            if ($existingCategory) {
+                // If the category exists, attach the existing category_id
+                $book->categories()->attach($existingCategory->id);
+            } else {
+                // If the category does not exist, create a new category
+                $category = Category::create(['name' => $request->new_category]);
+                $book->categories()->attach($category->id);
+            }
         }
 
         if ($request->filled('categories')) {
+            //Updates the book's categories to match the provided list, removing any categories not in the list and adding any new ones.
             $book->categories()->sync($request->categories);
         }
 
+        //redirect to book list with notification
         return redirect()->route('admin.books.index')->with('success', 'Book updated successfully.');
     }
 

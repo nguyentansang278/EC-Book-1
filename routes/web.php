@@ -6,15 +6,22 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\AuthorController as AdminAuthorController;
+use App\Http\Controllers\Admin\FeaturedItemsController as AdminFeaturedItemsController;
 
+use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ProfileController;
 use App\Http\Controllers\Guest\BookController;
 use App\Http\Controllers\Guest\CartController;
 use App\Http\Controllers\Guest\WishlistController;
 use App\Http\Controllers\Guest\OrderController;
 use App\Http\Controllers\Guest\CheckoutController;
+use App\Http\Controllers\PayPalController;
+use App\Http\Controllers\StripeController;
+use App\Http\Controllers\StripeWebhookController;
 
-Route::get('/', function(){return view ('guest.home');})->name('home');
+Route::get('/', function(){return view ('guest.landing_page');})->name('landing_page');
+Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', function(){return view ('guest.contact');})->name('contact');
 Route::get('/search-books', [BookController::class, 'search']);
 
@@ -100,5 +107,25 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'can:access-admin']]
 
         });
     });
+    Route::prefix('authors')->group(function () {
+        Route::controller(AdminAuthorController::class)->group(function() {
+            Route::get('/', 'index')->name('admin.authors.index');
+            Route::get('/{id}', 'show')->name('admin.authors.show');
+            Route::delete('/{id}', 'destroy')->name('admin.authors.destroy');
+            Route::put('/{id}', 'update')->name('admin.authors.update');
+        });
+    });
+
+    Route::prefix('featured_items')->group(function () {
+        Route::controller(AdminFeaturedItemsController::class)->group(function() {
+            Route::get('/', 'index')->name('admin.featured_items.index');
+            Route::get('/create', 'create')->name('admin.featured_items.create');
+            Route::post('/store', 'store')->name('admin.featured_items.store');
+            Route::get('/{id}', 'show')->name('admin.featured_items.show');
+            Route::delete('/{id}', 'destroy')->name('admin.featured_items.destroy');
+            Route::put('/{id}', 'update')->name('admin.featured_items.update');
+        });
+    });
 });
+
 require __DIR__.'/auth.php';

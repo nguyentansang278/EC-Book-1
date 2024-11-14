@@ -25,7 +25,7 @@
                             <button type="button" class="bg-gray-700 text-white px-2 py-1 rounded-md focus:outline-none" onclick="decreaseQuantity()">-</button>
                             <input type="text" id="quantity" name="quantity" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-center" value="1" min="1">
                             <button type="button" class="bg-gray-700 text-white px-2 py-1 rounded-md focus:outline-none" onclick="increaseQuantity()">+</button>
-                        </div>	                    
+                        </div>
                         <button type="submit" id="add-to-cart" data-id="{{ $book->id }}" class="mt-4 bg-red-400 hover:bg-red-500 text-white px-4 py-2 rounded-md">Add to cart</button>
 	                </form>
 
@@ -38,7 +38,7 @@
                         </button>
                     </form>
 
-                    <div class="text-sm text-gray-500">Genre: 
+                    <div class="text-sm text-gray-500">Genre:
                     @foreach($book->categories as $category)
                        <a href="/books?genre={{$category->id}}" class="text-black hover:text-purple-400">{{ $category->name }}</a>,
 	                @endforeach
@@ -46,14 +46,14 @@
 
                     <div class="mt-6">
                         <h2 class="text-xl font-semibold text-gray-800">Description</h2>
-                        <p class="text-gray-700 mt-2 text-sm">{{$book->description}}</p>
+                        <p class="text-gray-700 mt-2 text-sm">{!! $book->description !!}</p>
                     </div>
                 </div>
             </div>
-            
+
             <div class="mt-6">
                 <h2 class="text-xl font-semibold text-gray-800">About author</h2>
-                <p class="text-gray-700 mt-2">aa</p>
+                <p class="text-gray-700 mt-2">{{ $author->description }}</p>
             </div>
             <div class="mt-6">
                 <h2 class="text-xl font-semibold text-gray-800">Đánh giá (15)</h2>

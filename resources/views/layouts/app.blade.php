@@ -10,7 +10,7 @@
         @else
             <title>{{ config('app.name') }}</title>
         @endisset
-
+        <link rel="icon" href="{{ asset('storage/logo_removed_bg.png') }}" type="image/png">
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
@@ -21,11 +21,15 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
         <!-- Scripts -->
-        @vite([ 'resources/css/app.css', 
+        @vite([ 'resources/css/app.css',
                 'resources/js/app.js',
-                'resources/css/custom.css', 
+                'resources/css/custom.css',
                 'resources/js/custom.js'])
         <script src="https://kit.fontawesome.com/1e993a9369.js" crossorigin="anonymous"></script>
+
+        <!-- AOS Library -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 
         <!-- style -->
         <style>
@@ -39,9 +43,9 @@
         </style>
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-gray-100">
+        <div class="min-h-screen">
             @include('layouts.navigation')
-            <div id="searchbox" class="z-20 h-96 w-full mx-auto fixed flex justify-center items-center hidden">
+            <div id="searchbox" class="z-20 h-96 w-full mx-auto fixed justify-center items-center hidden">
                 <div class="flex w-3/5 justify-center h-96 bg-gray-800 mx-auto rounded-md">
                     <div class="relative text-gray-600 w-full">
                         <input id="search" oninput="handleInput(this.value)" type="text" name="search" placeholder="Search product" class="bg-white h-10 w-full mt-4 px-5 text-sm focus:outline-none">
@@ -50,7 +54,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <!-- Page Heading -->
             @isset($header)
                 <header class="text-gray-700 text-start px-4 py-4 ">
@@ -70,23 +74,23 @@
     <script type="text/javascript">
         toastr.options = {
             positionClass: 'toast-bottom-right',
-            timeOut: 2000, 
-            newestOnTop: true 
+            timeOut: 2000,
+            newestOnTop: true
         };
 
-        @if(Session::has('success')) 
-            toastr.success("{{ Session::get('success') }}"); 
+        @if(Session::has('success'))
+            toastr.success("{{ Session::get('success') }}");
         @endif
-        @if(Session::has('info')) 
-            toastr.info("{{ Session::get('info') }}"); 
+        @if(Session::has('info'))
+            toastr.info("{{ Session::get('info') }}");
         @endif
-        @if(Session::has('error')) 
-            toastr.error("{{ Session::get('error') }}"); 
+        @if(Session::has('error'))
+            toastr.error("{{ Session::get('error') }}");
         @endif
-        @if(Session::has('warning')) 
-            toastr.warning("{{ Session::get('warning') }}"); 
+        @if(Session::has('warning'))
+            toastr.warning("{{ Session::get('warning') }}");
         @endif
-        
+
         document.addEventListener('DOMContentLoaded', function () {
             // autofocus vào field có lỗi
             let errorFields = document.querySelectorAll('.is-invalid');
@@ -101,30 +105,6 @@
                 }
             }
         });
-        //custom handle response
-        function handleResponse(response, callback) {
-            if (response.success) {
-                toastr.success(response.success);
-            } else if (response.login) {
-                window.location.href = response.login_url;
-            } else if (response.errors) {
-                toastr.error(response.errors.join('<br>'));
-            } else {
-                toastr.error('An unexpected error occurred.');
-            }
-            if (typeof callback === 'function') {
-                callback();
-            }
-        }
-
-        function handleError(response, callback) {
-            if (response.status === 422) {
-                toastr.error(response.responseJSON.errors.join('<br>'));
-            }
-            if (typeof callback === 'function') {
-                callback();
-            }
-        }
 
         let typingTimer;
         function handleInput(query) {
@@ -174,29 +154,61 @@
             $('#search').focus();
         });
 
-        $('form[id^="add-to-cart-form-"]').submit(function(event) {
-            event.preventDefault();
+    $('form[id^="add-to-cart-form-"]').submit(function(event) {
+        event.preventDefault();
 
-            let form = $(this);
-            let formData = form.serialize();
-            formData += '&_token={{ csrf_token() }}';
+        let form = $(this);
+        let formData = form.serialize();
+        formData += '&_token={{ csrf_token() }}';
 
-            $.ajax({
-                url: '{{ route('cart.add') }}',
-                method: 'POST',
-                data: formData,
-                success: handleResponse,
-                error: function(response) {
-                    handleError(response, function() {
-                        if(response.status === 403) {
-                            window.location.href = '{{ route('verification.notice') }}';
-                        } else if(response.status === 401) {
-                            window.location.href = '{{ route('login') }}';
-                        }
-                    });
-                }
-            });
+        $.ajax({
+            url: '{{ route('cart.add') }}',
+            method: 'POST',
+            data: formData,
+            success: handleResponse,
+            error: function(response) {
+                handleError(response, function() {
+                    if(response.status === 403) {
+                        window.location.href = '{{ route('verification.notice') }}';
+                    } else if(response.status === 401) {
+                        window.location.href = '{{ route('login') }}';
+                    } else {
+                        toastr.error('An unexpected error occurred.');
+                    }
+                });
+            }
         });
+    });
 
+    // Custom handle response
+    function handleResponse(response, callback) {
+        if (response.success) {
+            toastr.success(response.success);
+        } else if (response.error) {
+            toastr.error(response.error);
+        } else if (response.info) {
+            toastr.info(response.info);
+        } else if (response.login) {
+            window.location.href = response.login_url;
+        } else {
+            toastr.error('An unexpected error occurred.');
+        }
+        if (typeof callback === 'function') {
+            callback();
+        }
+    }
+
+    function handleError(response, callback) {
+        if (response.status === 422) {
+            toastr.error(response.responseJSON.errors.join('<br>'));
+        } else if (response.responseJSON && response.responseJSON.error) {
+            toastr.error(response.responseJSON.error);
+        } else {
+            toastr.error('An unexpected error occurred.');
+        }
+        if (typeof callback === 'function') {
+            callback();
+        }
+    }
     </script>
 </html>

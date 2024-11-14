@@ -17,6 +17,14 @@ class CheckoutController extends Controller
         $cartItems = Cart::where('user_id', auth()->id())->get();
         $address = Address::where('user_id', auth()->id())->first();
 
+        if ($cartItems->isEmpty()) {
+            return redirect()->back()->with('info', 'Your cart is empty, please add items to your cart before proceeding to checkout.');
+        }
+        
+        if (is_null($address)) {
+            return redirect()->route('profile.edit')->with('info', 'Please add your address before proceeding to checkout.');
+        }
+
         return view('guest.checkout.index', compact('cartItems', 'address'));
     }
 
@@ -25,13 +33,15 @@ class CheckoutController extends Controller
         // Validate the input data
         $request->validate([
             'payment_method' => 'required|in:cod,card',
-            'card_number' => 'required_if:payment_method,card',
-            'expiry_date' => 'required_if:payment_method,card',
-            'cvv' => 'required_if:payment_method,card',
         ]);
 
         // Get the cart items
         $cartItems = Cart::where('user_id', auth()->id())->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->back()->with('info', 'Your cart is empty, please add items to your cart before proceeding to checkout.');
+        }
+
         $total = $cartItems->sum(function($item) {
             return $item->book->price * $item->quantity;
         });

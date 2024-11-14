@@ -1,8 +1,17 @@
+<style>
+    .book {
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+    .book:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+    }
+</style>
 <x-app-layout>
 	<x-slot name="title">{{ __('Books') }}</x-slot>
 	<x-slot name="header">{{ $selectedGenre?"$selectedGenre->name":"All Books" }}</x-slot>
 
-	<div id="container" class="bg-gray-100 p-6">
+	<div id="container" class="p-6">
 		<div class="container mx-auto flex">
 			<div class="fixed inset-0 bg-black opacity-50 hidden z-10" id="overlay"></div>
 
@@ -28,17 +37,22 @@
 				</div>
 				<div id="items-container" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-3">
 					@foreach($books as $book)
-					<div id="item" data-price="{{$book->price}}" data-name="{{$book->name}}">
+					<div class="book" id="item" data-price="{{$book->price}}" data-name="{{$book->name}}" title="{{$book->name}}">
 						<a href="{{ route('book.show', $book->id) }}" class="">
 							<div class="bg-white p-4 rounded-lg shadow-md h-96 overflow-hidden">
 								<img src="{{$book->cover_img}}" alt="Book Cover" class="w-full h-48 object-cover mb-4">
-								<h2 class="font-semibold">{{$book->name}}</h2>
-								<p class="text-sm text-gray-500">{{$book->author->name}}</p>
-								<p class="text-sm text-red-400">$ {{$book->price}}</p>
+								<p class="line-clamp-3">{{$book->name}}</p>
+								<p class="text-xs text-gray-500 mt-1">{{$book->author->name}}</p>
+								<p class="text-sm text-red-400 mt-1">$ {{$book->price}}</p>
 							</div>
 						</a>
 					</div>
 					@endforeach
+				</div>
+				<div class="row col-md-12">
+                    @if (count($books))
+                        {{ $books->render('admin.includes.pagination1') }}
+                    @endif
 				</div>
 			</div>
 		</div>

@@ -30,8 +30,10 @@ class OrderController extends Controller
         if ($request->filled('status')) {
             $query->where('order_status', $request->status);
         }
+        
+        $perPage = $request->input('per_page', 10);
 
-        $orders = $query->paginate(10);
+        $orders = $query->paginate($perPage);
 
         return view('admin.orders.index', compact('orders'));
     }

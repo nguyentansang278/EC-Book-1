@@ -37,24 +37,7 @@
                         </label>
                     </div>
                 </div>
-                <!-- Card Details Section -->
-                <div id="card-details" class="mb-6" style="display: none;">
-                    <h3 class="font-semibold text-lg">Card Details</h3>
-                    <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
-                        <div class="col-span-2">
-                            <label for="card_number" class="block text-sm font-medium text-gray-700">Card Number</label>
-                            <input type="text" name="card_number" id="card_number" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
-                        </div>
-                        <div class="col-span-1">
-                            <label for="expiry_date" class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                            <input type="text" name="expiry_date" id="expiry_date" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
-                        </div>
-                        <div class="col-span-1">
-                            <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
-                            <input type="text" name="cvv" id="cvv" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
-                        </div>
-                    </div>
-                </div>
+
                 <!-- Order Summary -->
                 <div class="mb-6">
                     <h3 class="font-semibold text-lg text-gray-800">Order Summary</h3>
@@ -99,14 +82,14 @@
 
         </div>
     </div>
-        <script>
+    <script>
         function togglePaymentMethod() {
-            var cardDetails = document.getElementById('card-details');
             var paymentMethod = document.querySelector('input[name="payment_method"]:checked').value;
+            var placeOrderButton = document.querySelector('button[type="submit"]');
             if (paymentMethod === 'card') {
-                cardDetails.style.display = 'block';
+                placeOrderButton.textContent = 'Continue to checkout page';
             } else {
-                cardDetails.style.display = 'none';
+                placeOrderButton.textContent = 'Place Order';
             }
         }
     </script>

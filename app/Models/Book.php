@@ -4,8 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Author;
-use App\Models\Category;
 use App\Enums\BookStatus;
 
 class Book extends Model
@@ -22,7 +20,7 @@ class Book extends Model
         'status',
     ];
 
-    protected $casts = [ 
+    protected $casts = [
         'status' => BookStatus::class,
     ];
 

@@ -13,7 +13,7 @@
         <div class="md:flex justify-between">
             <div class="w-full md:w-3/4 bg-white p-4 shadow-md divide-y divide-slate-400">
                 <div class="cart-item flex justify-between p-4">
-                    <img src="{{ $item->book->cover_img }}" alt="" class="w-24 h-auto">
+                    <a href="{{route('book.show', $item->book->id)}}"><img src="{{ $item->book->cover_img }}" alt="" class="w-24 h-auto"></a>
                     <div class="flex-1 ml-4">
                         <h3 class="text-lg font-semibold">{{ $item->book->name }}</h3>
                         <p class="text-gray-600">by </p>

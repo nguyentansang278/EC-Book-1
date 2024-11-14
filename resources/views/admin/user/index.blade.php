@@ -32,29 +32,28 @@
 						    <div class="container">
 						        <form method="GET" action="{{ route('users') }}" class="mb-4">
 						            <div class="row">
-						                <div class="col-md-4">
+						                <div class="col-md-5">
 						                    <div class="form-group">
 						                        <label for="name">Name</label>
 						                        <input type="text" name="name" class="form-control" value="{{ request()->name }}">
 						                    </div>
 						                </div>
-						                <div class="col-md-4">
+						                <div class="col-md-5">
 						                    <div class="form-group">
 						                        <label for="email">Email</label>
 						                        <input type="text" name="email" class="form-control" value="{{ request()->email }}">
 						                    </div>
 						                </div>
-						                <div class="col-md-4">
+						                <div class="col-md-2">
 						                    <div class="form-group">
 						                        <label for="role">Role</label>
 						                        <select name="role" class="form-control">
-						                            <option value="">Select Role</option>
-						                            @foreach ($roles as $role)
-						                                <option value="{{ $role->value }}" {{ request()->role == $role->value ? 'selected' : '' }}>
-						                                    {{ $role->getLabel() }}
-						                                </option>
-						                            @endforeach
-						                        </select>
+						                        	<option value=""></option>
+												    @foreach ($roles as $role)
+												        <option value="{{ $role->value }}" {{ request()->input('role', '') == $role->value ? 'selected' : '' }}> {{ $role->getLabel() }} </option>
+												    @endforeach
+												</select>
+
 						                    </div>
 						                </div>
 						            </div>
@@ -113,7 +112,9 @@
 						</div>
 					</div>
 					<div class="row col-md-12">
-
+                        @if (count($users))
+                            {{ $users->render('admin.includes.pagination') }}
+                        @endif
 					</div>
 				</div>
 			</div>

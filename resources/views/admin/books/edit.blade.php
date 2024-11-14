@@ -3,11 +3,19 @@
 @section('title', 'Edit Book')
 
 @section('content_header')
+<div class="row">
     <h1>Edit Book</h1>
+    <form action="{{ route('books.destroy', $book->id) }}" method="POST">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="btn btn-sm btn-danger ml-3">Delete</button>
+    </form>
+</div>
 @stop
 
 @section('content')
     <div class="container">
+
         <form action="{{ route('books.update', $book->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
@@ -55,25 +63,33 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" class="form-control" rows="5">{{ $book->description }}</textarea>
+                        <textarea name="description" class="form-control" rows="10">{{ $book->description }}</textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="categories">Categories (hold ctrl to select multiple items)</label>
-                        <select name="categories[]" class="form-control" multiple size="{{ count($categories) }}">
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}" {{ in_array($category->id, $book->categories->pluck('id')->toArray()) ? 'selected' : '' }}>
-                                    {{ $category->name }}
-                                </option>
+                        <label for="categories">Categories</label>
+                        <div class="row">
+                            @foreach ($categories as $index => $category)
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $category->id }}" id="category{{ $category->id }}" {{ in_array($category->id, $book->categories->pluck('id')->toArray()) ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="category{{ $category->id }}">
+                                            {{ $category->name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                @if (($index + 1) % 2 == 0)
+                                    <div class="w-100 d-md-none"></div>
+                                @endif
                             @endforeach
-                        </select>
+                        </div>
                         <input type="text" name="new_category" class="form-control mt-2" placeholder="Or add new category">
                     </div>
                 </div>
             </div>
-            <a href="{{route('admin.books.index')}}" class="btn btn-outline-warning mt-3"><strong>Back</strong></a>
-            <button type="submit" class="btn btn-outline-primary mt-3"><strong>Update</strong></button>
+            <a href="{{route('admin.books.index')}}" class="btn btn-sm btn-warning mt-3">Back</a>
+            <button type="submit" class="btn btn-sm btn-primary mt-3">Update</button>
         </form>
     </div>
 @stop

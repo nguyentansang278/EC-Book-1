@@ -41,7 +41,9 @@ class UserController extends Controller
             $query->where('role', $request->role);
         }
 
-        $users = $query->get();
+        $perPage = $request->input('per_page', 10);
+
+        $users = $query->paginate($perPage);
         $roles = Role::cases(); // Assuming you have a Role enum or similar
 
         return view('admin.user.index', compact('users', 'roles'));

@@ -44,7 +44,7 @@
                 <div class="col-md-2">
                     <div class="form-group">
                         <label for="cover_img">Cover Image URL</label>
-                        <input type="text" name="cover_img" class="form-control">
+                        <input type="text" name="cover_img" class="form-control" required>
                     </div>
                 </div>
             </div>
@@ -52,23 +52,33 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <label for="description">Description</label>
-                        <textarea name="description" class="form-control" rows="5"></textarea>
+                        <textarea name="description" class="form-control" rows="5" required></textarea>
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <label for="categories">Categories (hold ctrl to select multiple items)</label>
-                        <select name="categories[]" class="form-control" multiple size="{{ count($categories) }}">
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->id }}">{{ $category->name }}</option>
+                        <label for="categories">Categories</label>
+                        <div class="row">
+                            @foreach ($categories as $index => $category)
+                                <div class="col-md-6">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $category->id }}" id="category{{ $category->id }}">
+                                        <label class="form-check-label" for="category{{ $category->id }}">
+                                            {{ $category->name }}
+                                        </label>
+                                    </div>
+                                </div>
+                                @if (($index + 1) % 2 == 0)
+                                    <div class="w-100 d-md-none"></div>
+                                @endif
                             @endforeach
-                        </select>
+                        </div>
                         <input type="text" name="new_category" class="form-control mt-2" placeholder="Or add new category">
                     </div>
                 </div>
+
             </div>
             <button type="submit" class="btn btn-primary">Create Book</button>
         </form>
     </div>
-
 @stop

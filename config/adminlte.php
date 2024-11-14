@@ -340,8 +340,13 @@ return [
             // 'icon' => 'fas fa-fw fa-book',
         ],
         [
-            // 'text' => 'Genres',
-            // 'url' => 'admin/genres',
+            'text' => 'Authors',
+            'url' => 'admin/authors',
+            // 'icon' => 'fas fa-fw fa-lock',
+        ],
+        [
+            'text' => 'Featured items',
+            'url' => 'admin/featured_items',
             // 'icon' => 'fas fa-fw fa-lock',
         ],
 

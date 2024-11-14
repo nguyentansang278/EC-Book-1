@@ -37,8 +37,8 @@
 						<div class="col-md-12">
                             <div class="container"> 
                                 <form method="GET" action="{{ route('admin.books.index') }}" class="mb-4"> 
-                                    <div class="row"> 
-                                        <div class="col-md-3"> 
+                                    <div class="row">
+                                        <div class="col-md-4"> 
                                             <div class="form-group"> 
                                                 <label for="name">Book Name</label> 
                                                 <input type="text" name="name" class="form-control" value="{{ request()->name }}"> 
@@ -48,10 +48,10 @@
                                             <div class="form-group"> 
                                                 <label for="author_id">Author</label> 
                                                 <select name="author_id" class="form-control"> 
-                                                    <option value="">Select Author</option> 
-                                                        @foreach ($authors as $author) 
+                                                    <option value=""></option> 
+                                                    @foreach ($authors as $author) 
                                                         <option value="{{ $author->id }}" {{ request()->author_id == $author->id ? 'selected' : '' }}> {{ $author->name }}</option> 
-                                                        @endforeach 
+                                                    @endforeach 
                                                 </select> 
                                             </div> 
                                         </div> 
@@ -59,18 +59,18 @@
                                             <div class="form-group"> 
                                                 <label for="category_id">Category</label> 
                                                 <select name="category_id" class="form-control"> 
-                                                    <option value="">Select Category</option> 
-                                                        @foreach ($categories as $category) 
+                                                    <option value=""></option> 
+                                                    @foreach ($categories as $category) 
                                                         <option value="{{ $category->id }}" {{ request()->category_id == $category->id ? 'selected' : '' }}> {{ $category->name }} </option> 
-                                                        @endforeach 
+                                                    @endforeach 
                                                 </select> 
                                             </div> 
                                         </div>
-                                        <div class="col-md-3">
+                                        <div class="col-md-2">
                                             <div class="form-group">
                                                 <label for="status">Status</label>
                                                 <select name="status" class="form-control">
-                                                    <option value="">Select status</option>
+                                                    <option value=""></option>
                                                     @foreach ($status as $s)
                                                         <option value="{{ $s->value }}" {{ request()->status == $s->value ? 'selected' : '' }}>
                                                             {{ $s->getLabel() }}
@@ -87,41 +87,49 @@
 						   	<table class="table table-striped table-bordered">
                                 <thead class="header-table">
                                     <tr>
-                                        <th class=" text-center">Name</th>
-                                        <th class=" text-center">Author</th>
-                                        <th class=" text-center">Published Year</th>
-                                        <th class=" text-center">Price</th>
-                                        <th class=" text-center">Categories</th>
-                                        <th class=" text-center">Status</th>
-                                        <th class=" text-center">Actions</th>
+                                        <th class="text-center">Book ID</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Author</th>
+                                        <th class="text-center">Published Year</th>
+                                        <th class="text-center">Price</th>
+                                        <th class="text-center">Categories</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($books as $book)
+                                    @if (!is_null($books) && count($books))
+                                        @foreach ($books as $book)
+                                            <tr>
+                                                <td class="text-center">{{ $book->id }}</td>
+                                                <td>{{ $book->name }}</td>
+                                                <td class="text-center">{{ $book->author->name }}</td>
+                                                <td class="text-center">{{ $book->published_year }}</td>
+                                                <td class="text-center">{{ $book->price }}</td>
+                                                <td>
+                                                    @foreach ($book->categories as $category)
+                                                        {{ $category->name }},
+                                                    @endforeach
+                                                </td>
+                                                <td class=" text-center">{{ $book->status->getlabel() }}</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-sm btn-outline-primary change-status" data-id="{{ $book->id }}">
+                                                        {{ $book->status->getlabel() === 'Active' ? 'Deactivate' : 'Activate' }}
+                                                    </button>
+                                					<a href="{{ route('books.edit', $book->id) }}" class="btn btn-sm btn-outline-warning {{ $book->status->getlabel() === 'Active' ? 'disabled-link' : '' }}" {{ $book->status->getlabel() === 'Active' ? 'tabindex=-1 aria-disabled=true' : '' }}>Edit</a>
+                                                    <form action="{{ route('books.destroy', $book->id) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" {{ $book->status->getlabel() === 'Active' ? 'disabled' : '' }}>Delete</button>
+                                                    </form>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
                                         <tr>
-                                            <td>{{ $book->name }}</td>
-                                            <td>{{ $book->author->name }}</td>
-                                            <td class=" text-center">{{ $book->published_year }}</td>
-                                            <td>{{ $book->price }}</td>
-                                            <td>
-                                                @foreach ($book->categories as $category)
-                                                    {{ $category->name }},
-                                                @endforeach
-                                            </td>
-                                            <td class=" text-center">{{ $book->status->getlabel() }}</td>
-                                            <td>
-                                                <button type="button" class="btn btn-sm btn-outline-primary change-status" data-id="{{ $book->id }}">
-                                                    {{ $book->status->getlabel() === 'Active' ? 'Deactivate' : 'Activate' }}
-                                                </button>
-                            					<a href="{{ route('books.edit', $book->id) }}" class="btn btn-sm btn-outline-warning {{ $book->status->getlabel() === 'Active' ? 'disabled-link' : '' }}" {{ $book->status->getlabel() === 'Active' ? 'tabindex=-1 aria-disabled=true' : '' }}>Edit</a>
-                                                <form action="{{ route('books.destroy', $book->id) }}" method="POST" style="display:inline;">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-sm btn-outline-danger" {{ $book->status->getlabel() === 'Active' ? 'disabled' : '' }}>Delete</button>
-                                                </form>
-                                            </td>
+                                            <td colspan="8" class=" text-center">Data Not Found</td>
                                         </tr>
-                                    @endforeach
+                                    @endif
                                 </tbody>
                             </table>
 						</div>
@@ -152,7 +160,7 @@
                 success: function(response) {
                     if (response.status === 'success') {
                         // Cập nhật trạng thái sách và nút trong bảng
-                        var statusCell = button.closest('tr').find('td:nth-child(6)');
+                        var statusCell = button.closest('tr').find('td:nth-child(7)');
                         var statusText = response.new_status === 'active' ? 'Active' : 'Inactive';
                         statusCell.text(statusText);
 

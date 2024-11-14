@@ -22,7 +22,7 @@
                 @else
                     @foreach($cartItems as $item)
                     <div class="item-{{ $item->id }} cart-item flex justify-between p-4">
-                        <img src="{{ $item->book->cover_img }}" alt="" class="w-24 h-auto">
+                        <a href="{{route('book.show', $item->book->id)}}"><img src="{{ $item->book->cover_img }}" alt="" class="w-24 h-auto"></a>
                         <div class="flex-1 ml-4">
                             <h3 class="text-lg font-semibold">{{ $item->book->name }}</h3>
                             <p class="text-gray-600">by Sarah J. Maas</p>
@@ -42,7 +42,7 @@
                 <div class="w-full md:w-1/4 border-t-4 md:border-0 bg-white p-4 shadow-md">
                     <h2 class="text-xl font-semibold">Order Summary</h2>
                     <p id="subtotal" class="mt-4">Subtotal ( items): $</p>
-                    <a href="{{route('checkout.index')}}" class="w-full mt-4 py-2 bg-orange-400 text-white">Proceed to checkout</a>
+                    <a href="{{route('checkout.index')}}" class= "bg-orange-400 text-white p-2 mt-4 flex flex-end">Proceed to checkout</a>
                 </div>
                 @endif
         </div>
