@@ -27,43 +27,74 @@
                 'resources/js/custom.js'])
         <script src="https://kit.fontawesome.com/1e993a9369.js" crossorigin="anonymous"></script>
 
-        <!-- AOS Library -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-
         <!-- style -->
         <style>
             #search-results {
                 display: none;
             }
-
             #search-results.active {
                 display: block;
             }
+            #loading {
+                position: fixed;
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                background: rgba(0, 0, 0, 0.8);
+                z-index: 9999;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                transition: opacity 0.2s ease-out;
+            }
+            .loader {
+                width: 50%;
+                height: 5px;
+                display: inline-block;
+                position: relative;
+                background: rgba(255, 255, 255, 0.15);
+                overflow: hidden;
+            }
+            .loader::after {
+                content: '';
+                width: 192px;
+                height: 4.8px;
+                background: #FFF;
+                position: absolute;
+                top: 0;
+                left: 0;
+                box-sizing: border-box;
+                animation: animloader 2s linear infinite;
+            }
+
+            @keyframes animloader {
+                0% {
+                    left: 0;
+                    transform: translateX(-100%);
+                }
+                100% {
+                    left: 100%;
+                    transform: translateX(0%);
+                }
+            }
+
         </style>
     </head>
     <body class="font-sans antialiased">
+        <div id="loading"><span class="mx-4 loader"></span></div>
         <div class="min-h-screen">
             @include('layouts.navigation')
-            <div id="searchbox" class="z-20 h-96 w-full mx-auto fixed justify-center items-center hidden">
-                <div class="flex w-3/5 justify-center h-96 bg-gray-800 mx-auto rounded-md">
-                    <div class="relative text-gray-600 w-full">
-                        <input id="search" oninput="handleInput(this.value)" type="text" name="search" placeholder="Search product" class="bg-white h-10 w-full mt-4 px-5 text-sm focus:outline-none">
-                        <div id="search-results" class="flex w-full bg-white text-sm">
-                        </div>
-                    </div>
-                </div>
-            </div>
 
             <!-- Page Heading -->
             @isset($header)
-                <header class="text-gray-700 text-start px-4 py-4 ">
-                    <h1 class="text-5xl lg:text-7xl font-bold lg:mx-24">{{ $header }}</h1>
+                <header class="text-gray-700 text-start px-4 py-4">
+                    <h1 class="text-xl lg:text-3xl font-bold lg:mx-24 underline decoration-orange-500/55">{{ $header }}</h1>
                 </header>
             @endisset
 
             <!-- Page Content -->
-            <main>
+            <main class="bg-orange-100" id="content">
                 {{ $slot }}
             </main>
 
@@ -106,109 +137,72 @@
             }
         });
 
-        let typingTimer;
-        function handleInput(query) {
-            clearTimeout(typingTimer);
-            if (query.length > 0) {
-                document.getElementById('search').classList.add('z-20')
-                document.getElementById('overlay').classList.remove('hidden');
-                document.getElementById('search-results').classList.add('active');
-                typingTimer = setTimeout (function(){
-                    fetchBooks(query);
-                }, 200);
-            } else if (query.length === 0) {
-                document.getElementById('search-results').classList.remove('active');
-            }
-        }
+        $('form[id^="add-to-cart-form-"]').submit(function(event) {
+            event.preventDefault();
 
-        function fetchBooks(query) {
-            fetch(`/search-books?query=${query}`)
-            .then(response => response.json())
-            .then(data => {
-                updateSearchResults(data.books);
+            let form = $(this);
+            let formData = form.serialize();
+            formData += '&_token={{ csrf_token() }}';
+
+            $.ajax({
+                url: '{{ route('cart.add') }}',
+                method: 'POST',
+                data: formData,
+                success: handleResponse,
+                error: function(response) {
+                    handleError(response, function() {
+                        if(response.status === 403) {
+                            window.location.href = '{{ route('verification.notice') }}';
+                        } else if(response.status === 401) {
+                            window.location.href = '{{ route('login') }}';
+                        } else {
+                            toastr.error('An unexpected error occurred.');
+                        }
+                    });
+                }
             });
-        }
+        });
 
-        function updateSearchResults(books) {
-            const resultsContainer = document.getElementById('search-results');
-            resultsContainer.innerHTML = '';
-
-            if (books.length === 0) {
-                resultsContainer.innerHTML = '<div class="p-8 text-center">Book not found</div>';
+        // Custom handle response
+        function handleResponse(response, callback) {
+            if (response.success) {
+                toastr.success(response.success);
+            } else if (response.error) {
+                toastr.error(response.error);
+            } else if (response.info) {
+                toastr.info(response.info);
+            } else if (response.login) {
+                window.location.href = response.login_url;
             } else {
-                books.forEach(book => {
-                    const bookItem = `
-                        <div class="p-2 hover:bg-gray-200 cursor-pointer">
-                            <a href="/books/${book.id}" class="block">${book.name}</a>
-                        </div>
-                    `;
-                    resultsContainer.insertAdjacentHTML('beforeend', bookItem);
-                });
+                toastr.error('An unexpected error occurred.');
             }
-            resultsContainer.classList.add('active');
+            if (typeof callback === 'function') {
+                callback();
+            }
         }
 
-        $('#open_searchbox_btn').on('click', function() {
-            $('#searchbox').removeClass('hidden');
-            $('#overlay').removeClass('hidden');
-            $('#search').focus();
+        function handleError(response, callback) {
+            if (response.status === 422) {
+                toastr.error(response.responseJSON.errors.join('<br>'));
+            } else if (response.responseJSON && response.responseJSON.error) {
+                toastr.error(response.responseJSON.error);
+            } else {
+                toastr.error('An unexpected error occurred.');
+            }
+            if (typeof callback === 'function') {
+                callback();
+            }
+        }
+
+        window.addEventListener('load', function() {
+            document.getElementById('loading').style.opacity = '0';
+            setTimeout(function() {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+            }, 200);
         });
 
-    $('form[id^="add-to-cart-form-"]').submit(function(event) {
-        event.preventDefault();
-
-        let form = $(this);
-        let formData = form.serialize();
-        formData += '&_token={{ csrf_token() }}';
-
-        $.ajax({
-            url: '{{ route('cart.add') }}',
-            method: 'POST',
-            data: formData,
-            success: handleResponse,
-            error: function(response) {
-                handleError(response, function() {
-                    if(response.status === 403) {
-                        window.location.href = '{{ route('verification.notice') }}';
-                    } else if(response.status === 401) {
-                        window.location.href = '{{ route('login') }}';
-                    } else {
-                        toastr.error('An unexpected error occurred.');
-                    }
-                });
-            }
-        });
-    });
-
-    // Custom handle response
-    function handleResponse(response, callback) {
-        if (response.success) {
-            toastr.success(response.success);
-        } else if (response.error) {
-            toastr.error(response.error);
-        } else if (response.info) {
-            toastr.info(response.info);
-        } else if (response.login) {
-            window.location.href = response.login_url;
-        } else {
-            toastr.error('An unexpected error occurred.');
-        }
-        if (typeof callback === 'function') {
-            callback();
-        }
-    }
-
-    function handleError(response, callback) {
-        if (response.status === 422) {
-            toastr.error(response.responseJSON.errors.join('<br>'));
-        } else if (response.responseJSON && response.responseJSON.error) {
-            toastr.error(response.responseJSON.error);
-        } else {
-            toastr.error('An unexpected error occurred.');
-        }
-        if (typeof callback === 'function') {
-            callback();
-        }
-    }
+        function showLoading() { document.getElementById('loading').style.display = 'flex'; document.getElementById('loading').style.opacity = '1'; }
+        document.addEventListener('DOMContentLoaded', function() { var buttons = document.querySelectorAll('button[data-loading]'); buttons.forEach(function(button) { button.addEventListener('click', showLoading); }); });
     </script>
 </html>

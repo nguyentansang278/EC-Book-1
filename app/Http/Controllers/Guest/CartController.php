@@ -16,7 +16,7 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cartItems = auth()->user()->cartItems()->with('book')->get();
+        $cartItems = auth()->user()->cartItems()->with('book.author')->get();
         return view('guest.cart.index', compact('cartItems'));
     }
 
@@ -42,16 +42,16 @@ class CartController extends Controller
         $bookId = $request->input('book_id');
         $quantity = $request->input('quantity', 1);
 
-        // If the book is not found in the database 
-        // (maybe because it was updated while the visitor was viewing the book), 
+        // If the book is not found in the database
+        // (maybe because it was updated while the visitor was viewing the book),
         // ask the visitor to reload the page.
-        try { 
+        try {
             $book = Book::findOrFail($bookId);
             // Check if the book is active
             if ($book->status !== BookStatus::ACTIVE) {
                 return response()->json(['info' => 'The book is being updated, please come back in a few minutes.']);
             }
-        } catch (ModelNotFoundException $e) { 
+        } catch (ModelNotFoundException $e) {
             return response()->json(['info' => 'Book not found, please reload the page.']);
         }
 

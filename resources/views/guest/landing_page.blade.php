@@ -1,7 +1,4 @@
 <style>
-	#open_searchbox_btn{
-		display: none;
-	}
     .nav{
         display: none;
     }
@@ -13,18 +10,6 @@
 <x-app-layout>
 	<x-slot name="title">{{ __('Home') }}</x-slot>
     <style>
-        #open_searchbox_btn {
-            display: none;
-        }
-
-        #search-results {
-            display: none;
-        }
-
-        #search-results.active {
-            display: block;
-        }
-
         .section {
             height: 500vh;
             display: flex;
@@ -40,7 +25,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: -1;
         }
 
         .content {
@@ -75,13 +59,13 @@
         }
     </style>
         <!-- Landing Page Sections -->
-        <div class="section">
+        <div class="section z-10">
             <video class="background-video" autoplay muted loop>
                 <source src="{{ asset('storage/landing_bg.mp4') }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
             <div class="content fade-in">
-                <h1 class="text-red-500 font-bold bg-white">Welcome to Our Bookstore</h1>
+                <h1 class="text-red-500 bg-black">Welcome to Our Bookstore</h1>
                 <p class="">Discover a world of books at your fingertips. From bestsellers to hidden gems, we have it all.</p>
                 <a href="{{ route('home') }}"><p class="rounded py-2 mt-4 text-white bg-red-500 hover:bg-white hover:text-red-500 transition duration-300 ease-in-out transform hover:scale-105">Explore now</p></a>
             </div>

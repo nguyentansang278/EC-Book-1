@@ -60,7 +60,7 @@ class ProfileController extends Controller
         if ($request->filled('new_address')) {
             Address::create(array_merge(
                 ['user_id' => $user->id],
-                $request->new_address
+                $request->new_address,
             ));
         }
 

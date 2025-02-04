@@ -10,10 +10,10 @@
             padding: 0 3px;
         }
         .form-check-input:checked + .form-check-label {
-            background-color: #3a98ff; /* Màu nền khi được chọn */
-            color: white; /* Màu chữ khi được chọn */
-            border-radius: 3px; /* Bo góc */
-            transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out; /* Hiệu ứng chuyển đổi */
+            background-color: #3a98ff;
+            color: white;
+            border-radius: 3px;
+            transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
         }
 
     </style>

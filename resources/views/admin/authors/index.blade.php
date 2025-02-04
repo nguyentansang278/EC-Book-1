@@ -26,9 +26,9 @@
                             <table class="table table-striped table-bordered">
                                 <thead class="header-table">
                                     <tr>
-                                        <th class="text-center">Author ID</th>
+                                        <th class="text-center col-md-1">Author ID</th>
                                         <th class="text-center">Name</th>
-                                        <th class="text-center">Actions</th>
+                                        <th class="text-center col-md-2">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>

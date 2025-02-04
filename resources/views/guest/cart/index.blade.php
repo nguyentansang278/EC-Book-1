@@ -1,7 +1,4 @@
 <style>
-    #open_searchbox_btn{
-        display: none;
-    }
     .disabled {
         pointer-events: none;
         opacity: 0.5;
@@ -25,8 +22,8 @@
                         <a href="{{route('book.show', $item->book->id)}}"><img src="{{ $item->book->cover_img }}" alt="" class="w-24 h-auto"></a>
                         <div class="flex-1 ml-4">
                             <h3 class="text-lg font-semibold">{{ $item->book->name }}</h3>
-                            <p class="text-gray-600">by Sarah J. Maas</p>
-                            <p class="price text-gray-800">${{ $item->book->price }}</p>
+                            <p class="text-gray-600">{{ $item->book->author->name }}</p>
+                            <p class="price text-red-600">${{ $item->book->price }}</p>
                             <div class="flex items-center mt-2">
                                 <!-- <button class="decrement px-2 py-1 bg-gray-200">-</button> -->
                                 <input name="quantity" type="text" value="{{ $item->quantity }}" data-id="{{ $item->id }}" class="w-full md:w-auto text-center mx-2 border border-gray-300">

@@ -6,16 +6,36 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Mail;
 use App\Models\Order;
+use App\Enums\OrderStatus;
 
 class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $status = $request->query('order_status');
+
+        if ($status && !OrderStatus::isValid($status)) {
+            abort(400, 'Invalid status');
+        }
+
+        $orders = Order::query()->where('user_id', Auth()->id());
+
+        if ($status){
+            $orders->where('order_status', $status);
+        } else {
+            $orders->whereNot('order_status', OrderStatus::Canceled->value);
+        }
+
+        return view('guest.orders.index', [
+            'orders' => $orders->orderBy('created_at', 'desc')->get(),
+            'statuses' => OrderStatus::getLabels(),
+            'currentStatus' => $status,
+        ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -54,7 +74,7 @@ class OrderController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update($id)
     {
         //
     }
@@ -67,6 +87,15 @@ class OrderController extends Controller
         //
     }
 
+    public function cancel(string $id)
+    {
+        //
+        $order = Order::findOrFail($id);
+        $order->update([
+            'order_status' => OrderStatus::Canceled->value,
+        ]);
+        return redirect()->back()->with(['success' => 'Order was been canceled.']);
+    }
     public function sendMail(){
         $name= 'Nguyen Trong Tan Sang';
         Mail::send('email', compact('name'), function($email) use ($name){

@@ -8,18 +8,20 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-use App\Mail\TestMail;
 
-class TestMail extends Mailable
+class OrderPlacedMail extends Mailable
 {
     use Queueable, SerializesModels;
+
+    public $order;
 
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($order)
     {
         //
+        $this->order = $order;
     }
 
     /**
@@ -28,18 +30,15 @@ class TestMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Test Mail',
+            subject: 'Order Placed Mail',
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
+    public function build()
     {
-        return new Content(
-            view: 'view.name',
-        );
+        return $this->subject('Xác nhận đơn hàng của bạn')
+                    ->view('emails.order-placed')
+                    ->with(['order' => $this->order]);
     }
 
     /**
@@ -50,10 +49,5 @@ class TestMail extends Mailable
     public function attachments(): array
     {
         return [];
-    }
-
-    public function sendMail(){
-        $name = 'Nguyen Trong Tan Sang';
-        Mail::to('nguyentansangcv@gmail.com')->send(new TestMail($name));
     }
 }

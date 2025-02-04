@@ -41,16 +41,17 @@
             </div>
             <div class="flex justify-between items-center mt-8 border-white">
                 <div class="flex space-x-4">
-                    <a href="#" class="hover:text-gray-400"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="hover:text-gray-400"><i class="fab fa-twitter"></i></a>
-                    <a href="#" class="hover:text-gray-400"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.facebook.com/" class="hover:text-blue-500 h-8"><i class="fab fa-facebook-f"></i></a>
+                    <a href="https://x.com/" class="hover:text-black h-8"><i class="fab fa-twitter"></i></a>
+                    <a href="https://www.instagram.com/" class="hover:text-red-600 h-8"><i class="fab fa-instagram"></i></a>
                 </div>
                 <div class="text-sm">
                     <p>&copy; 2024 EC-Book. All rights reserved.</p>
                 </div>
                 <div class="flex space-x-4">
-                    <img src="https://example.com/visa.png" alt="Visa" class="h-6">
-                    <img src="https://example.com/mastercard.png" alt="Mastercard" class="h-6">
+                    <img src="{{ asset('storage/visa-logo.png') }}" alt="Visa" class="h-8">
+                    <img src="{{ asset('storage/mastercard-logo.png') }}" alt="Mastercard" class="h-8">
+                    <img src="{{ asset('storage/paypal-logo.png') }}" alt="Paypal" class="h-8">
                 </div>
             </div>
         </div>

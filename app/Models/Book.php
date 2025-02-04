@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Enums\BookStatus;
 
 class Book extends Model
@@ -28,8 +29,14 @@ class Book extends Model
     {
         return $this->belongsTo(Author::class);
     }
+
     public function categories()
     {
         return $this->belongsToMany(Category::class);
+    }
+
+    public function scopeActive(Builder $query)
+    {
+        return $query->where('status', BookStatus::ACTIVE->value);
     }
 }

@@ -17,10 +17,7 @@ class BookController extends Controller
     {
         $sort = $request->query('sort', 'default');
         $genreId = $request->query('genre');
-        $query = Book::query();
-
-        // Only include books with status 'active'
-        $query->where('status', 'active');
+        $query = Book::query()->active();
 
         if ($genreId) {
             $query->join('book_category', 'books.id', '=', 'book_category.book_id')
@@ -57,20 +54,16 @@ class BookController extends Controller
 
     public function search(Request $request)
     {
-        $query = $request->input('query');
-        if (!(Str::length($query) === 0)) {
-            $books = Book::where('name', 'LIKE', "%{$query}%")
-                          ->where('status', 'active') // Chỉ lấy sách có trạng thái active
-                          ->get();
+        try {
+            $query = $request->get('query');
 
-            $authors = Author::where('name', 'LIKE', "%{$query}%")
-                                ->get();
-
-            return response()->json(['books' => $books,
-                                    'authors' => $authors]);
-
-        } else {
-            return response()->json(['books' => []]);
+            $books = Book::where('name', 'like', "%$query%")
+                ->active()
+                ->limit(5)
+                ->get(['id', 'name']);
+            return response()->json($books);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'An error occurred. Please try again later.'], 500);
         }
     }
 }

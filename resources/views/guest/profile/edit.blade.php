@@ -1,7 +1,4 @@
 <style>
-    #open_searchbox_btn{
-        display: none;
-    }
 </style>
 
 <x-app-layout>

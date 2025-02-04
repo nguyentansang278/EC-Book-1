@@ -53,7 +53,7 @@
 
             <div class="mt-6">
                 <h2 class="text-xl font-semibold text-gray-800">About author</h2>
-                <p class="text-gray-700 mt-2">{{ $author->description }}</p>
+                <p class="text-gray-700 mt-2">{!! $author->description !!}</p>
             </div>
             <div class="mt-6">
                 <h2 class="text-xl font-semibold text-gray-800">Đánh giá (15)</h2>

@@ -10,6 +10,11 @@
             <p>Address: {{ $order->address->address }}</p>
             <p>Phone: {{ $order->address->phone_number }}</p>
             <p>Total: ${{ $order->total_price }}</p>
+            @if($order->payment_method->value == 'cod')
+                <p class="bg-warning text-white p-2">Cash payment</p>
+            @else
+                <p class="bg-primary text-white p-2">Card payment</p>
+            @endif
             <p>Status: {{ ucfirst($order->order_status->value) }}</p>
             <h3 class="h5 mt-4">Items:</h3>
             <ul>

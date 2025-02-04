@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use App\Enums\PaymentMethod;
 use App\Enums\OrderStatus;
 
@@ -37,5 +38,10 @@ class Order extends Model
     public function orderItems()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function scopeCompleted(Builder $query)
+    {
+        return $query->where('order_status', OrderStatus::Completed->value);
     }
 }

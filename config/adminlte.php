@@ -325,6 +325,11 @@ return [
         // ],
         // ['header' => 'account_settings'],
         [
+            'text' => 'Revenue',
+            'url' => 'admin/revenue',
+            // 'icon' => 'fas fa-regular fa-user',
+        ],
+        [
             'text' => 'Users',
             'url' => 'admin/users',
             // 'icon' => 'fas fa-regular fa-user',

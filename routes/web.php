@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\LandingController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\BookController as AdminBookController;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\AuthorController as AdminAuthorController;
 use App\Http\Controllers\Admin\FeaturedItemsController as AdminFeaturedItemsController;
+use App\Http\Controllers\Admin\RevenueController as AdminRevenueController;
 
 use App\Http\Controllers\Guest\HomeController;
 use App\Http\Controllers\Guest\ProfileController;
@@ -47,8 +47,9 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::post('/add-to-cart', [CartController::class, 'addToCart'])->name('cart.add');
         Route::post('/add-to-wishlist', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
         Route::post('/remove-from-wishlist', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
+
     });
-        
+
     Route::prefix('wishlist')->group(function(){
         Route::get('/', [WishlistController::class, 'index'])->name('wishlist.index');
     });
@@ -65,12 +66,15 @@ Route::middleware(['auth','verified'])->group(function () {
         Route::controller(CheckoutController::class)->group(function(){
             Route::get('/', 'index')->name('checkout.index');
             Route::post('/', 'processCheckout')->name('processCheckout');
+            Route::get('/success', function(){return view ('guest.checkout.order_success');})->name('order.success');
         });
     });
 
     Route::prefix('orders')->group(function(){
         Route::controller(OrderController::class)->group(function(){
+            Route::get('/', 'index')->name('client.orders');
             Route::get('/{id}', 'show')->name('client.orders.show');
+            Route::put('/{id}', 'cancel')->name('client.order.cancel');
         });
     });
 });
@@ -124,6 +128,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'can:access-admin']]
             Route::get('/{id}', 'show')->name('admin.featured_items.show');
             Route::delete('/{id}', 'destroy')->name('admin.featured_items.destroy');
             Route::put('/{id}', 'update')->name('admin.featured_items.update');
+        });
+    });
+
+    Route::prefix('revenue')->group(function (){
+        Route::controller(AdminRevenueController::class)->group(function(){
+            Route::get('/', 'index')->name('admin.revenue');
         });
     });
 });
