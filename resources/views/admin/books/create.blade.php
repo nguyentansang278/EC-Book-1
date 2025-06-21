@@ -26,21 +26,12 @@
                 <div class="col-md-3">
                     <div class="form-group">
                         <label for="author_id">Author</label>
-                            <div class="row">
-                            @foreach ($categories as $index => $category)
-                                <div class="col-md-6">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $category->id }}" id="category{{ $category->id }}">
-                                        <label class="form-check-label" for="category{{ $category->id }}">
-                                            {{ $category->name }}
-                                        </label>
-                                    </div>
-                                </div>
-                                @if (($index + 1) % 2 == 0)
-                                    <div class="w-100 d-md-none"></div>
-                                @endif
+                        <select name="author_id" class="form-control">Add commentMore actions
+                            <option value="">Select Author</option>
+                            @foreach ($authors as $author)
+                                <option value="{{ $author->id }}">{{ $author->name }}</option>
                             @endforeach
-                        </div>                   
+                        </select>
                         <input type="text" name="new_author" class="form-control mt-2" placeholder="Or add new author">
                     </div>
                 </div>
