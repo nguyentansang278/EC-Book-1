@@ -94,7 +94,7 @@
             @endisset
 
             <!-- Page Content -->
-            <main class="bg-orange-100" id="content">
+            <main class="bg-gray-100" id="content">
                 {{ $slot }}
             </main>
 

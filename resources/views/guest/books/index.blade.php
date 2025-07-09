@@ -21,7 +21,7 @@
                 <h2 class="text-xl font-semibold mb-4">Genres</h2>
                 <ul>
                     @foreach($genres as $genre)
-                        <li class="mb-2"><a href="#" onclick="filterBooks('{{ $genre->id }}')" class="text-sm text-gray-500 hover:text-purple-400 active:text-purple-600 {{ $genre->id == $genreId ? 'font-bold text-purple-600 underline' : '' }}">{{$genre->name}}</a></li>
+                        <li onclick="filterBooks('{{ $genre->id }}')" class="mb-2 text-sm text-gray-500 hover:cursor-pointer hover:text-purple-400 active:text-purple-600 {{ $genre->id == $genreId ? 'font-bold text-purple-600 underline' : '' }}">{{$genre->name}} </li>
                     @endforeach
                 </ul>
             </div>

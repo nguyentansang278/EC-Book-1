@@ -30,11 +30,13 @@
                     <div class="w-full md:w-1/2">
                         <h2 class="text-xl font-bold mb-4">Categories</h2>
                         <ul>
-                            @foreach($genres as $genre)
-                                <li>
-                                    <a href="{{ route('books', ['genre' => $genre->id]) }}" class="hover:underline text-sm">{{ $genre->name }}</a>
-                                </li>
+                            @foreach($genres as $key => $genre)
+                                @if( $key>10 )
+                                    @break
+                                @endif
+                                <li><a href="{{ route('books', ['genre' => $genre->id]) }}" class="hover:underline text-sm">{{ $genre->name }}</a></li>
                             @endforeach
+                                <li><a href="{{ route('categories') }}" class="hover:underline text-sm text-orange-500">See all</a></li>
                         </ul>
                     </div>
                 </div>

@@ -18,6 +18,10 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        if ($request->has('redirect_to')) {
+            session(['redirect_to' => $request->get('redirect_to')]);
+        }
+
         return view('guest.profile.edit', [
             'user' => $request->user(),
             'addresses' => $request->user()->addresses,
@@ -64,7 +68,9 @@ class ProfileController extends Controller
             ));
         }
 
-        return Redirect::route('profile.edit')->with('success', 'Addresses updated.');
+        $redirectUrl = session()->pull('redirect_to', route('profile.edit'));
+
+        return redirect($redirectUrl)->with('success', 'Addresses updated.');
     }
 
     /**

@@ -4,16 +4,18 @@ namespace App\Services\Admin;
 
 use App\Models\Order;
 use Carbon\Carbon;
-use App\Enums\OrderStatus;
+use Illuminate\Support\Collection;
 
 class RevenueServices
 {
     /**
-     * 
+     *
      * @param string $timeFrame - 'day', 'month', 'year'
-     * @return \Illuminate\Support\Collection
+     * @param $timeFrom
+     * @param $timeTo
+     * @return Collection
      */
-    public function getRevenueByTimeFrame($timeFrame, $timeFrom, $timeTo)
+    public function getRevenueByTimeFrame(string $timeFrame, $timeFrom, $timeTo): Collection
     {
         $query = Order::completed();
 
@@ -59,7 +61,7 @@ class RevenueServices
         return $query->get();
     }
 
-    public function getWeeklySalesData()
+    public function getWeeklySalesData(): array
     {
         $labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
@@ -72,7 +74,7 @@ class RevenueServices
 
         $today = Carbon::today();
         $startOfWeek = $today->startOfWeek();
-        
+
         $startOfLastWeek = $startOfWeek->copy()->subWeek();
 
         for ($i = 0; $i < 7; $i++) {

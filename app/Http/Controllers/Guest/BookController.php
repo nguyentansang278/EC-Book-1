@@ -4,16 +4,18 @@ namespace App\Http\Controllers\Guest;
 use App\Http\Controllers\Controller;
 use App\Models\Book;
 use App\Models\Category;
-use App\Models\Author;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Wishlist;
-use Illuminate\Support\Str;
 use App\Enums\BookStatus;
 
 class BookController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): View|Factory|Application
     {
         $sort = $request->query('sort', 'default');
         $genreId = $request->query('genre');
@@ -28,10 +30,11 @@ class BookController extends Controller
         }
 
         $books = $query->select('books.*')->paginate(25);
+
         return view('guest.books.index', compact(['books', 'genreId', 'selectedGenre']));
     }
 
-    public function show($id)
+    public function show($id): Factory|View|Application|\Illuminate\Http\RedirectResponse
     {
         try {
             $book = Book::findOrFail($id);
@@ -52,7 +55,7 @@ class BookController extends Controller
         return view('guest.books.book-description', compact('book', 'inWishlist', 'author'));
     }
 
-    public function search(Request $request)
+    public function search(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $query = $request->get('query');

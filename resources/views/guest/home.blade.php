@@ -28,24 +28,26 @@
         <div class="grid grid-cols-1 md:flex md:flex-wrap gap-4 bg-white">
             <div class="author-info p-5 rounded-lg md:flex-1 md:w-1/3">
                 <h2 class="font-bold text-xl underline decoration-pink-500">FEATURED AUTHOR</h2>
-                <h1 class="text-4xl font-bold mt-2">{{ $featuredAuthor->author->name }}</h1>
+                <h1 class="text-4xl font-bold mt-2">{{ $featuredAuthor ? $featuredAuthor->author->name : 'fetured author name'}}</h1>
                 <p class="mt-4">
-                    {!! $featuredAuthor->author->description !!}
+                    {!! $featuredAuthor ? $featuredAuthor->author->description : "featured author about" !!}
                 </p>
             </div>
             <div class="author-img flex-1 md:w-1/3 flex justify-center items-center">
-                <img class="max-w-full h-auto rounded-lg" src="{{ $featuredAuthor->author->image }}" alt="{{ $featuredAuthor->author->name }}">
+                <img class="max-w-full h-auto rounded-lg" src="{{ $featuredAuthor ? $featuredAuthor->author->image : 'featured author image'}}" alt="featured author image">
             </div>
             <div class="books p-5 flex-1 md:w-1/3 grid grid-cols-2 gap-4">
-                @foreach($featuredAuthor->author->books as $book)
-                    <a href="{{ route('book.show', $book->id) }}">
-                        <div class="book shadow-2xl h-80">
-                            <img class="w-full h-48 object-cover" src="{{ $book->cover_img }}" alt="{{ $book->name }}">
-                            <p class="text-center mt-2">{{ $book->name }}</p>
-                            <p class="text-center font-bold text-red-500">${{ $book->price }}</p>
-                        </div>
-                    </a>
-                @endforeach
+                @if($featuredAuthor)
+                    @foreach($featuredAuthor->author->books as $book)
+                        <a href="{{ route('book.show', $book->id) }}">
+                            <div class="book shadow-2xl h-80">
+                                <img class="w-full h-48 object-cover" src="{{ $book->cover_img }}" alt="{{ $book->name }}">
+                                <p class="text-center mt-2">{{ $book->name }}</p>
+                                <p class="text-center font-bold text-red-500">${{ $book->price }}</p>
+                            </div>
+                        </a>
+                    @endforeach
+                @endif
             </div>
         </div>
     </div>

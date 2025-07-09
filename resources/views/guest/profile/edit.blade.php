@@ -11,8 +11,8 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
+            <div id="update-addresses-form" class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
+                <div class="w-full">
                     @include('guest.profile.partials.update-addresses-form')
                 </div>
             </div>
@@ -23,10 +23,10 @@
                 </div>
             </div>
 
-            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg">
-                <div class="max-w-xl">
-                    @include('guest.profile.partials.delete-user-form')
-                </div>
+            <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg border-2 border-red-500">
+                    <div class="max-w-xl">
+                        @include('guest.profile.partials.delete-user-form')
+                    </div>
             </div>
         </div>
     </div>

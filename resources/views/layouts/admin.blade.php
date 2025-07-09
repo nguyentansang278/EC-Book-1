@@ -16,6 +16,10 @@
             transition: background-color 0.1s ease-in-out, color 0.1s ease-in-out;
         }
 
+         .highlighted-search-keywords {
+             background-color: #4cadff;
+             padding: 0 1px;
+         }
     </style>
 
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" rel="stylesheet">

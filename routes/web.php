@@ -20,10 +20,10 @@ use App\Http\Controllers\PayPalController;
 use App\Http\Controllers\StripeController;
 use App\Http\Controllers\StripeWebhookController;
 
-Route::get('/', function(){return view ('guest.landing_page');})->name('landing_page');
-Route::get('/home', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/contact', function(){return view ('guest.contact');})->name('contact');
 Route::get('/search-books', [BookController::class, 'search']);
+Route::get('/categories', function (){ return view ('guest.categories');})->name('categories');
 
 Route::prefix('books')->group(function(){
     Route::controller(BookController::class)->group(function(){

@@ -7,7 +7,7 @@
     .disabled-link {
         pointer-events: none;
         cursor: not-allowed;
-        color: #6c757d; /* Màu sắc tuỳ chọn để hiển thị như đã bị vô hiệu hóa */
+        color: #6c757d;
         text-decoration: none;
     }
 </style>
@@ -35,36 +35,36 @@
 					<hr>
 					<div class="row col-md-12">
 						<div class="col-md-12">
-                            <div class="container"> 
-                                <form method="GET" action="{{ route('admin.books.index') }}" class="mb-4"> 
+                            <div class="container">
+                                <form method="GET" action="{{ route('admin.books.index') }}" class="mb-4">
                                     <div class="row">
-                                        <div class="col-md-4"> 
-                                            <div class="form-group"> 
-                                                <label for="name">Book Name</label> 
-                                                <input type="text" name="name" class="form-control" value="{{ request()->name }}"> 
-                                            </div> 
-                                        </div> 
-                                        <div class="col-md-3"> 
-                                            <div class="form-group"> 
-                                                <label for="author_id">Author</label> 
-                                                <select name="author_id" class="form-control"> 
-                                                    <option value=""></option> 
-                                                    @foreach ($authors as $author) 
-                                                        <option value="{{ $author->id }}" {{ request()->author_id == $author->id ? 'selected' : '' }}> {{ $author->name }}</option> 
-                                                    @endforeach 
-                                                </select> 
-                                            </div> 
-                                        </div> 
-                                        <div class="col-md-3"> 
-                                            <div class="form-group"> 
-                                                <label for="category_id">Category</label> 
-                                                <select name="category_id" class="form-control"> 
-                                                    <option value=""></option> 
-                                                    @foreach ($categories as $category) 
-                                                        <option value="{{ $category->id }}" {{ request()->category_id == $category->id ? 'selected' : '' }}> {{ $category->name }} </option> 
-                                                    @endforeach 
-                                                </select> 
-                                            </div> 
+                                        <div class="col-md-4">
+                                            <div class="form-group">
+                                                <label for="name">Book Name</label>
+                                                <input type="text" name="name" class="form-control" value="{{ request()->name }}">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="author_id">Author</label>
+                                                <select name="author_id" class="form-control">
+                                                    <option value=""></option>
+                                                    @foreach ($authors as $author)
+                                                        <option value="{{ $author->id }}" {{ request()->author_id == $author->id ? 'selected' : '' }}> {{ $author->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="form-group">
+                                                <label for="category_id">Category</label>
+                                                <select name="category_id" class="form-control">
+                                                    <option value=""></option>
+                                                    @foreach ($categories as $category)
+                                                        <option value="{{ $category->id }}" {{ request()->category_id == $category->id ? 'selected' : '' }}> {{ $category->name }} </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="form-group">
@@ -79,8 +79,8 @@
                                                 </select>
                                             </div>
                                         </div>
-                                    </div> 
-                                    <button type="submit" class="btn btn-primary">Search</button> 
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">Search</button>
                                     <a href="{{ route('admin.books.index') }}" class="btn btn-secondary">Reset</a>
                                 </form>
                             </div>
@@ -148,8 +148,8 @@
 <script>
     $(document).ready(function() {
         $('.change-status').click(function() {
-            var button = $(this);
-            var bookId = button.data('id');
+            let button = $(this);
+            let bookId = button.data('id');
             $.ajax({
                 url: '/admin/books/' + bookId + '/toggle-status',
                 method: 'PATCH',
@@ -159,17 +159,14 @@
                 },
                 success: function(response) {
                     if (response.status === 'success') {
-                        // Cập nhật trạng thái sách và nút trong bảng
-                        var statusCell = button.closest('tr').find('td:nth-child(7)');
-                        var statusText = response.new_status === 'active' ? 'Active' : 'Inactive';
+                        let statusCell = button.closest('tr').find('td:nth-child(7)');
+                        let statusText = response.new_status === 'active' ? 'Active' : 'Inactive';
                         statusCell.text(statusText);
 
-                        // Cập nhật nút trạng thái
                         button.text(response.new_status === 'active' ? 'Deactivate' : 'Activate');
 
-                        // Cập nhật nút Edit và Delete
-                        var editButton = button.closest('tr').find('a.btn-outline-warning');
-                        var deleteButton = button.closest('tr').find('button.btn-outline-danger');
+                        let editButton = button.closest('tr').find('a.btn-outline-warning');
+                        let deleteButton = button.closest('tr').find('button.btn-outline-danger');
 
                         if (response.new_status === 'active') {
                             editButton.addClass('disabled-link').attr('tabindex', '-1').attr('aria-disabled', 'true');

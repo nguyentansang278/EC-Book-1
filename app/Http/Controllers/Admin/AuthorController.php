@@ -4,16 +4,20 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Author;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 
 class AuthorController extends Controller
 {
     /**
      * Display a listing of the authors.
      */
-    public function index(Request $request)
+    public function index(Request $request): View|Factory|Application
     {
-        $query = Author::query();
+        $query = Author::query()->orderBy('name', 'asc');
 
         if ($request->filled('name')) {
             $query->where('name', 'LIKE', '%' . $request->name . '%');
@@ -54,7 +58,7 @@ class AuthorController extends Controller
      */
     public function show ($id)
     {
-        $author = Author::find($id);
+        $author = Author::findOrFail($id);
         return view('admin.authors.show', compact('author'));
     }
 
@@ -80,7 +84,7 @@ class AuthorController extends Controller
         $author = Author::find($id);
         $author->update($request->all());
 
-        return redirect()->route('admin.authors.index')->with('success', 'Author updated successfully.');
+        return Redirect::back()->with('success', 'Author updated successfully.');
     }
 
     /**
@@ -90,6 +94,7 @@ class AuthorController extends Controller
     {
         $author = Author::find($id);
         $author->delete();
-        return redirect()->route('admin.authors.index')->with('success', 'Author deleted successfully.');
+        return Redirect::back()->with('success', 'Author deleted successfully.');
     }
+
 }

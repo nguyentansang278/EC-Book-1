@@ -18,7 +18,7 @@
                         <div class="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-4 font-semibold">
                             <p>{{ $address->address }}</p>
                             <p>{{ $address->phone_number }}</p>
-                            <a href="{{ route('profile.edit') }}" class="text-white bg-orange-500 hover:shadow-sm hover:shadow-orange-500/50 hover:text-orange-500 text-sm font-light p-1 hover:bg-white transition">
+                            <a href="{{ route('profile.edit') }}/#update-addresses-form?redirect_to=/checkout" class="text-white bg-orange-500 hover:shadow-sm hover:shadow-orange-500/50 hover:text-orange-500 text-sm font-light p-1 hover:bg-white transition">
                                 Change
                             </a>
                         </div>

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Guest;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Models\Book;
 use App\Models\Cart;
@@ -14,13 +19,13 @@ use App\Enums\BookStatus;
 
 class CartController extends Controller
 {
-    public function index()
+    public function index(): View|Factory|Application
     {
         $cartItems = auth()->user()->cartItems()->with('book.author')->get();
         return view('guest.cart.index', compact('cartItems'));
     }
 
-    public function updateQuantity(UpdateQuantityRequest $request)
+    public function updateQuantity(UpdateQuantityRequest $request): JsonResponse
     {
         $cartItem = Cart::find($request->id);
         if ($cartItem) {
